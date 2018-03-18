@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="MySQL - bsb_bank@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.0">
+    <root id="1"/>
+    <schema id="2" parent="1" name="bsb_bank">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="3" parent="1" name="autohouse"/>
+    <schema id="4" parent="1" name="information_schema"/>
+    <schema id="5" parent="1" name="javabycode"/>
+    <schema id="6" parent="1" name="minsk_db"/>
+    <schema id="7" parent="1" name="minsk_db1"/>
+    <schema id="8" parent="1" name="mysql"/>
+    <schema id="9" parent="1" name="netgloo_blog"/>
+    <schema id="10" parent="1" name="performance_schema"/>
+    <schema id="11" parent="1" name="students"/>
+    <schema id="12" parent="1" name="sys"/>
+    <table id="13" parent="2" name="role"/>
+    <table id="14" parent="2" name="user"/>
+    <column id="15" parent="13" name="id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="16" parent="13" name="name">
+      <Position>2</Position>
+      <DataType>varchar(45)|0</DataType>
+    </column>
+    <key id="17" parent="13" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="18" parent="14" name="id">
+      <Position>1</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="19" parent="14" name="login">
+      <Position>2</Position>
+      <DataType>varchar(45)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="20" parent="14" name="password">
+      <Position>3</Position>
+      <DataType>varchar(45)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="21" parent="14" name="name">
+      <Position>4</Position>
+      <DataType>varchar(45)|0</DataType>
+    </column>
+    <column id="22" parent="14" name="role_id">
+      <Position>5</Position>
+      <DataType>int(11)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="23" parent="14" name="login_UNIQUE">
+      <ColNames>login</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="24" parent="14" name="role_idx">
+      <ColNames>role_id</ColNames>
+    </index>
+    <key id="25" parent="14" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="26" parent="14" name="login_UNIQUE">
+      <ColNames>login</ColNames>
+      <UnderlyingIndexName>login_UNIQUE</UnderlyingIndexName>
+    </key>
+    <foreign-key id="27" parent="14" name="role">
+      <ColNames>role_id</ColNames>
+      <RefSchemaName>bsb_bank</RefSchemaName>
+      <RefTableName>role</RefTableName>
+      <RefColNames>id</RefColNames>
+      <OnUpdate>update</OnUpdate>
+      <OnDelete>delete</OnDelete>
+    </foreign-key>
+  </database-model>
+</dataSource>
