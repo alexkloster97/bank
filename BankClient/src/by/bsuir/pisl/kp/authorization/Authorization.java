@@ -54,28 +54,32 @@ public class Authorization extends CustomJFrame {
                         Connection.getOutputStream().writeObject(login.getText());
                         Connection.getOutputStream().writeObject(String.valueOf(password.getPassword()));
                         User user = (User) Connection.getInputStream().readObject();
-                        if(user.getLogin().isEmpty()) {
+                        if (user.getLogin().isEmpty()) {
                             login.setBorder(BorderFactory.createLineBorder(Color.red));
                             password.setBorder(BorderFactory.createLineBorder(Color.red));
                             JOptionPane.showMessageDialog(null,
                                     "Введите корректные данные",
                                     "Неверные данные",
                                     JOptionPane.WARNING_MESSAGE);
+                        } else if (!user.getSubmited()) {
+                            JOptionPane.showMessageDialog(null,
+                                    "Пользователь " + user.getName() + " не подтвержден админимтратором",
+                                    "Отказно.",
+                                    JOptionPane.ERROR_MESSAGE);
+
                         } else {
                             JOptionPane.showMessageDialog(null,
                                     "Добро пожаловать, " + user.getName(),
                                     "Добро пожаловать!",
                                     JOptionPane.INFORMATION_MESSAGE);
-                            if(user.getRole().equals(Roles.ADMINISTRATOR)) {
+                            if (user.getRole().equals(Roles.ADMINISTRATOR)) {
                                 new MainAdmin();
-                                dispose();
-                            }
-                            else if(user.getRole().equals(Roles.USER)) {
+                            } else if (user.getRole().equals(Roles.USER)) {
                                 new MainUser();
-                                dispose();
                             }
                             dispose();
                         }
+
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     } catch (ClassNotFoundException e1) {

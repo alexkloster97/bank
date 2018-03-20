@@ -37,12 +37,15 @@ public class UserRequests extends CustomJFrame{
                 List<User> editUserList = new ArrayList<User>();
                 for(int i = 0; i < userTable.getRowCount(); i++) {
                     if((Boolean)userTable.getValueAt(i, 5)) {
-                        editUserList.add(new User((Integer)userTable.getValueAt(i, 0), (String)userTable.getValueAt(i, 2), (String) userTable.getValueAt(i, 3), (String) userTable.getValueAt(i, 1), (Roles) userTable.getValueAt(i, 4), true));
+                        editUserList.add(new User((Integer)userTable.getValueAt(i, 0),
+                                (String)userTable.getValueAt(i, 2), (String) userTable.getValueAt(i, 3),
+                                (String) userTable.getValueAt(i, 1), (Roles) userTable.getValueAt(i, 4),
+                                true));
                     }
                 }
                 if(!editUserList.isEmpty()) {
                     try {
-                        Connection.getOutputStream().writeObject(7);
+                        Connection.getOutputStream().writeObject(5);
                         Connection.getOutputStream().writeObject(editUserList);
                     } catch (IOException e1) {
                         e1.printStackTrace();
@@ -100,13 +103,15 @@ public class UserRequests extends CustomJFrame{
             userTable.setModel(tableModel);
             int i = 0;
             for (User user : users) {
-                userTable.setValueAt(user.getId(), i, 0);
-                userTable.setValueAt(user.getName(), i, 1);
-                userTable.setValueAt(user.getLogin(), i, 2);
-                userTable.setValueAt(user.getPassword(), i, 3);
-                userTable.setValueAt(user.getRole(), i, 4);
-                userTable.setValueAt(false, i, 5);
-                i++;
+                if(!user.getSubmited()) {
+                    userTable.setValueAt(user.getId(), i, 0);
+                    userTable.setValueAt(user.getName(), i, 1);
+                    userTable.setValueAt(user.getLogin(), i, 2);
+                    userTable.setValueAt(user.getPassword(), i, 3);
+                    userTable.setValueAt(user.getRole(), i, 4);
+                    userTable.setValueAt(false, i, 5);
+                    i++;
+                }
             }
 
         } catch (IOException e) {

@@ -102,8 +102,10 @@ public class Server {
                             user = DBWork.authorisation(login, password);
                             if(user.getLogin().isEmpty()) {
                                 LOGGER.info("Неверные учетные данные. Пользователь: " + login);
+                            } else if (!user.getSubmited()) {
+                                LOGGER.info("Пользователь не подтвержден администратором");
                             } else {
-                                LOGGER.info("Авторизация успешна.");
+                                LOGGER.info("Авторизация успешна");
                             }
                             out.writeObject(user);
                             break;

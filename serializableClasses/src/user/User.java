@@ -46,6 +46,14 @@ public class User implements Serializable{
         this.submited = submited;
     }
 
+    public Boolean getSubmited() {
+        return submited;
+    }
+
+    public void setSubmited(Boolean submited) {
+        this.submited = submited;
+    }
+
     private int id;
     private String login;
     private String name;
