@@ -58,3 +58,5 @@ INSERT INTO user (name, login, password, role_id) VALUES ('Zelda Dinsdale', 'zdi
 INSERT INTO user (name, login, password, role_id) VALUES ('Jarrett Smithyman', 'jsmithymani', 'jsmithymani', 2);
 INSERT INTO user (name, login, password, role_id) VALUES ('Marnia Stickford', 'mstickfordj', 'mstickfordj', 2);
 
+
+ALTER TABLE user ADD submitted BOOLEAN  NOT NULL DEFAULT true

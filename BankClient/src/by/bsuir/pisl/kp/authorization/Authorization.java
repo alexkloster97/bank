@@ -3,8 +3,9 @@ package by.bsuir.pisl.kp.authorization;
 import by.bsuir.pisl.kp.CustomJFrame;
 import by.bsuir.pisl.kp.admin.MainAdmin;
 import by.bsuir.pisl.kp.user.MainUser;
-import by.bsuir.pisl.kp.users.User;
 import by.bsuir.pisl.kp.connection.Connection;
+import user.Roles;
+import user.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,11 +66,11 @@ public class Authorization extends CustomJFrame {
                                     "Добро пожаловать, " + user.getName(),
                                     "Добро пожаловать!",
                                     JOptionPane.INFORMATION_MESSAGE);
-                            if(user.getRole_id()==1) {
+                            if(user.getRole().equals(Roles.ADMINISTRATOR)) {
                                 new MainAdmin();
                                 dispose();
                             }
-                            else if(user.getRole_id() == 2) {
+                            else if(user.getRole().equals(Roles.USER)) {
                                 new MainUser();
                                 dispose();
                             }

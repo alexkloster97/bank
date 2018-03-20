@@ -1,8 +1,8 @@
 package by.bsuir.pisl.kp.connection;
 
 import by.bsuir.pisl.kp.database.DBWork;
-import by.bsuir.pisl.kp.users.User;
 import org.apache.log4j.Logger;
+import user.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -117,6 +117,18 @@ public class Server {
                             LOGGER.info("Список пользовтелей отправлен клиенту: " + this.getLogin());
                             out.writeObject(DBWork.getAllUsers());
                             break;
+                        case 4:
+                            LOGGER.info("Удаление пользователей клиентом:" + this.getLogin());
+                            List<Integer> deleteUserList = (List<Integer>) in.readObject();
+                            DBWork.deleteUsers(deleteUserList);
+                            break;
+                        case 5:
+                            LOGGER.info("Редактирование пользователей клиентом:" + this.getLogin());
+                            List<User> editUserList = (List<User>) in.readObject();
+                            DBWork.updateAllUsers(editUserList);
+                        case 6:
+                            LOGGER.info("Подтверждение запросов пользователей клиентом:" + this.getLogin());
+                            out.writeObject(DBWork.getAllUsers());
                         case -1:
                             connected = false;
                             break;

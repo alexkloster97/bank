@@ -1,8 +1,9 @@
 package by.bsuir.pisl.kp.authorization;
 
 import by.bsuir.pisl.kp.CustomJFrame;
-import by.bsuir.pisl.kp.users.User;
 import by.bsuir.pisl.kp.connection.Connection;
+import user.Roles;
+import user.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,7 +53,7 @@ public class Registration extends CustomJFrame{
                                 "Ошибка",
                                 JOptionPane.WARNING_MESSAGE);
                     } else {
-                        user = new User(login.getText(), password_1.getText(), name.getText(), 3);
+                        user = new User(login.getText(), password_1.getText(), name.getText(), Roles.USER, false);
                         try {
                             Connection.getOutputStream().writeObject(2);
                             Connection.getOutputStream().writeObject(user);

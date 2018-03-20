@@ -1,16 +1,21 @@
 package by.bsuir.pisl.kp.database;
 
 
-import by.bsuir.pisl.kp.users.User;
+import org.apache.log4j.Logger;
+import user.Roles;
+import user.User;
 
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by alexk on 05.12.2016.
  */
 public class DBWork {
+    private static final Logger LOGGER = Logger.getLogger(DBWork.class);
+
     private static PreparedStatement stmt;
     private static Connection con = DBConnection.getConnection();
 
@@ -22,11 +27,11 @@ public class DBWork {
             stmt.setString(2, password);
             ResultSet result = stmt.executeQuery();
             while (result.next()) {
-                user = new User(result.getInt(1), result.getString(2), result.getString(3), result.getString(4), result.getInt(5));
+                user = new User(result.getInt(1), result.getString(2), result.getString(3), result.getString(4), Roles.getRoleById(result.getInt(5)));
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error("Ошибка авторизации пользователя: " + e.getMessage());
         }
         return user;
     }
@@ -49,26 +54,53 @@ public class DBWork {
                 stmt.setString(1, user.getLogin());
                 stmt.setString(2, user.getPassword());
                 stmt.setString(3, user.getName());
-                stmt.setInt(4, user.getRole_id());
+                stmt.setInt(4, user.getRole().getId());
                 stmt.executeUpdate();
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                LOGGER.error("Ошибка добавления пользователей: " + ex.getMessage());
                 unique = false;
             }
         }
         return unique;
     }
 
+    public static void deleteUsers(List<Integer> users) {
+
+        try {
+            for(Integer id: users) {
+                stmt = con.prepareStatement("DELETE FROM `bsb_bank`.`user` where `id` = ? ");
+                stmt.setInt(1, id);
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Ошибка удаления пользователей: " + e.getMessage());
+        }
+    }
+
+    private static String getLoginList(List<User> users) {
+        StringBuffer str = new StringBuffer();
+        String loginList = "";
+        for(User user: users) {
+            str.append("'");
+            str.append(user.getLogin());
+            str.append("', ");
+        }
+        str.setLength(str.length() - 2);
+        return str.toString();
+    }
+
+
+
     public static ArrayList<User> getAllUsers() {
 
         ArrayList<User> users = new ArrayList<>();
         try {
-            stmt = con.prepareStatement("SELECT u.id, u.login, u.password, u.name, r.name AS role\n" +
-                    "FROM bsb_bank.user u INNER JOIN bsb_bank.role r ON u.role_id = r.id\n" +
+            stmt = con.prepareStatement("SELECT u.id, u.login, u.password, u.name, u.role_id\n" +
+                    "FROM bsb_bank.user u\n" +
                     "ORDER BY u.id");
             ResultSet result = stmt.executeQuery();
             while (result.next()) {
-                User user = new User(result.getInt(1), result.getString(2), result.getString(3), result.getString(4), result.getString(5));
+                User user = new User(result.getInt(1), result.getString(2), result.getString(3), result.getString(4), Roles.getRoleById(result.getInt(5)));
                 users.add(user);
             }
 
@@ -78,7 +110,7 @@ public class DBWork {
         return users;
     }
 
-    public static void updateAllUsers(ArrayList<User> users) {
+    public static void updateAllUsers(List<User> users) {
         try {
             int i = 0;
             while (i < users.size()) {
@@ -86,7 +118,7 @@ public class DBWork {
                 stmt.setString(1, users.get(i).getLogin());
                 stmt.setString(2, users.get(i).getPassword());
                 stmt.setString(3, users.get(i).getName());
-                stmt.setInt(4, users.get(i).getRole_id());
+                stmt.setInt(4, users.get(i).getRole().getId());
                 stmt.setInt(5, users.get(i).getId());
                 stmt.executeUpdate();
                 i++;

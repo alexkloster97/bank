@@ -1,4 +1,5 @@
-package by.bsuir.pisl.kp.users;
+package user;
+
 
 import java.io.Serializable;
 
@@ -18,7 +19,7 @@ public class User implements Serializable{
         return login;
     }
 
-    public String getRole() {
+    public Roles getRole() {
         return role;
     }
 
@@ -30,49 +31,49 @@ public class User implements Serializable{
         name = "";
     }
 
-    public int getRole_id() {
-        return role_id;
+    public User(String login, String password, String name, Roles role) {
+        this.login = login;
+        this.name = name;
+        this.password = password;
+        this.role = role;
+    }
+
+    public User(String login, String password, String name, Roles role, Boolean submited) {
+        this.login = login;
+        this.name = name;
+        this.password = password;
+        this.role = role;
+        this.submited = submited;
     }
 
     private int id;
     private String login;
     private String name;
     private String password;
-    private String role;
-    private int role_id;
+    private Roles role;
+    private Boolean submited = true;
 
-    public User(int id, String login, String password, String name, int role_id) {
+    public User(int id, String login, String password, String name, Roles role, Boolean submited) {
         this.id = id;
         this.login = login;
         this.name = name;
         this.password = password;
-        this.role_id = role_id;
-    }
-    public User(String login, String password, String name, int role_id) {
-        this.login = login;
-        this.name = name;
-        this.password = password;
-        this.role_id = role_id;
+        this.role = role;
+        this.submited = submited;
     }
 
-    public User(int id, String login, String password, String name, String role) {
+    public User(int id, String login, String password, String name, Roles role) {
         this.id = id;
         this.login = login;
         this.name = name;
         this.password = password;
         this.role = role;
     }
-    public User(int id, String login, String name, String role) {
+
+    public User(int id, String login, String name, Roles role) {
         this.id = id;
         this.login = login;
         this.name = name;
-        this.role = role;
-    }
-
-    public User(String login, String password, String name, String role) {
-        this.login = login;
-        this.name = name;
-        this.password = password;
         this.role = role;
     }
 }
