@@ -1,5 +1,6 @@
 package by.bsuir.pisl.kp.admin;
 
+import by.bsuir.pisl.kp.CustomJFrame;
 import by.bsuir.pisl.kp.connection.Connection;
 import user.Roles;
 import user.User;
@@ -21,7 +22,7 @@ public class AddUserWindow extends  JFrame{
     private JPanel panel;
     private User user;
 
-    public AddUserWindow() {
+    public AddUserWindow(CustomJFrame callerFrame) {
         super("Регистрация");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         add.addActionListener(new ActionListener() {
@@ -75,12 +76,6 @@ public class AddUserWindow extends  JFrame{
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    Connection.getOutputStream().writeObject(3);
-                    new MainAdmin();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
                 dispose();
             }
         });

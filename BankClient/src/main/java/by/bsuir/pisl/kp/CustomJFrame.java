@@ -22,4 +22,8 @@ public class CustomJFrame extends JFrame {
         });
     }
 
+    public void reloadTable(JTable table) {
+
+    }
+
 }

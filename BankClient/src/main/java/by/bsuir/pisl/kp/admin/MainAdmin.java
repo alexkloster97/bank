@@ -51,11 +51,18 @@ public class MainAdmin extends CustomJFrame {
             }
         });
         addUserButton.addActionListener(new ActionListener() {
+            CustomJFrame frame;
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                new AddUserWindow();
+                new AddUserWindow(frame);
             }
-        });
+
+            public ActionListener setParams(CustomJFrame frame) {
+                this.frame = frame;
+                return this;
+            }
+        }.setParams(this));
         requestButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
