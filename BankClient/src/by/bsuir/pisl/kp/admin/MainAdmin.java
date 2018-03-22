@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import by.bsuir.pisl.kp.CustomJFrame;
+import by.bsuir.pisl.kp.authorization.Authorization;
 import by.bsuir.pisl.kp.connection.Connection;
 import user.Roles;
 import user.User;
-
 
 
 /**
@@ -36,6 +36,13 @@ public class MainAdmin extends CustomJFrame {
 
     public MainAdmin() {
         super("Администрирование");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Authorization();
+                dispose();
+            }
+        });
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -49,17 +56,24 @@ public class MainAdmin extends CustomJFrame {
                 new AddUserWindow();
             }
         });
+        requestButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new UserRequests();
+                dispose();
+            }
+        });
         deleteUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 List<Integer> deleteUserList = new ArrayList<Integer>();
-                for(int i = 0; i < usersTable.getRowCount(); i++) {
-                    if((Boolean)usersTable.getValueAt(i, 5)) {
-                        deleteUserList.add((Integer)usersTable.getValueAt(i, 0));
-                        ((DefaultTableModel) usersTable.getModel()).removeRow(i);
+                for (int i = 0; i < usersTable.getRowCount(); i++) {
+                    if ((Boolean) usersTable.getValueAt(i, 5)) {
+                        deleteUserList.add((Integer) usersTable.getValueAt(i, 0));
                     }
                 }
-                if(!deleteUserList.isEmpty()) {
+                users.removeAll(deleteUserList);
+                if (!deleteUserList.isEmpty()) {
                     try {
                         Connection.getOutputStream().writeObject(4);
                         Connection.getOutputStream().writeObject(deleteUserList);
@@ -67,19 +81,20 @@ public class MainAdmin extends CustomJFrame {
                         e1.printStackTrace();
                     }
                 }
-
+                createUIComponents();
+                ((DefaultTableModel)usersTable.getModel()).fireTableDataChanged();
             }
         });
         editUserButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 List<User> editUserList = new ArrayList<User>();
-                for(int i = 0; i < usersTable.getRowCount(); i++) {
-                    if((Boolean)usersTable.getValueAt(i, 5)) {
-                        editUserList.add(new User((Integer)usersTable.getValueAt(i, 0), (String)usersTable.getValueAt(i, 2), (String) usersTable.getValueAt(i, 3), (String) usersTable.getValueAt(i, 1), (Roles) usersTable.getValueAt(i, 4)));
+                for (int i = 0; i < usersTable.getRowCount(); i++) {
+                    if ((Boolean) usersTable.getValueAt(i, 5)) {
+                        editUserList.add(new User((Integer) usersTable.getValueAt(i, 0), (String) usersTable.getValueAt(i, 2), (String) usersTable.getValueAt(i, 3), (String) usersTable.getValueAt(i, 1), (Roles) usersTable.getValueAt(i, 4)));
                     }
                 }
-                if(!editUserList.isEmpty()) {
+                if (!editUserList.isEmpty()) {
                     try {
                         Connection.getOutputStream().writeObject(5);
                         Connection.getOutputStream().writeObject(editUserList);
@@ -87,7 +102,7 @@ public class MainAdmin extends CustomJFrame {
                         e1.printStackTrace();
                     }
                 }
-
+                createUIComponents();
             }
         });
         setPreferredSize(new Dimension(650, 400));
@@ -111,6 +126,7 @@ public class MainAdmin extends CustomJFrame {
                 public boolean isCellEditable(int row, int column) {
                     return true;
                 }
+
                 @Override
                 public String getColumnName(int index) {
                     return user[index];
@@ -137,22 +153,24 @@ public class MainAdmin extends CustomJFrame {
                     }
                 }
             };
-        usersTable.setModel(tableModel);
-        int i = 0;
-        for(User user: users) {
-            usersTable.setValueAt(user.getId(), i, 0);
-            usersTable.setValueAt(user.getName(), i, 1);
-            usersTable.setValueAt(user.getLogin(), i, 2);
-            usersTable.setValueAt(user.getPassword(), i, 3);
-            usersTable.setValueAt(user.getRole(), i, 4);
-            usersTable.setValueAt(false, i, 5);
-            i++;
-        }
-
+            usersTable.setModel(tableModel);
+            int i = 0;
+            for (User user : users) {
+                usersTable.setValueAt(user.getId(), i, 0);
+                usersTable.setValueAt(user.getName(), i, 1);
+                usersTable.setValueAt(user.getLogin(), i, 2);
+                usersTable.setValueAt(user.getPassword(), i, 3);
+                usersTable.setValueAt(user.getRole(), i, 4);
+                usersTable.setValueAt(false, i, 5);
+                i++;
+            }
+            ;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
+
+
 }

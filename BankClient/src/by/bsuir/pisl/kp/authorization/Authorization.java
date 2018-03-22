@@ -61,7 +61,7 @@ public class Authorization extends CustomJFrame {
                                     "Введите корректные данные",
                                     "Неверные данные",
                                     JOptionPane.WARNING_MESSAGE);
-                        } else if (!user.getSubmited()) {
+                        } else if (!user.getSubmitted()) {
                             JOptionPane.showMessageDialog(null,
                                     "Пользователь " + user.getName() + " не подтвержден админимтратором",
                                     "Отказно.",

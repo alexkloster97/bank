@@ -8,9 +8,9 @@ import java.sql.SQLException;
  * Created by alexk on 05.12.2016.
  */
 public class DBConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/autohouse";
+    private static final String URL = "jdbc:mysql://localhost:3306/bsb_bank";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "wX=tFh.ss12#";
+    private static final String PASSWORD = "opentac55";
     private static Connection con;
     private static final DBConnection dbConnection = new DBConnection();
     private DBConnection() {}

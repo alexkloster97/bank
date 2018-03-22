@@ -102,7 +102,7 @@ public class Server {
                             user = DBWork.authorisation(login, password);
                             if(user.getLogin().isEmpty()) {
                                 LOGGER.info("Неверные учетные данные. Пользователь: " + login);
-                            } else if (!user.getSubmited()) {
+                            } else if (!user.getSubmitted()) {
                                 LOGGER.info("Пользователь не подтвержден администратором");
                             } else {
                                 LOGGER.info("Авторизация успешна");
@@ -117,7 +117,7 @@ public class Server {
                         case 3:
                             //чтение всех пользователей
                             LOGGER.info("Список пользовтелей отправлен клиенту: " + this.getLogin());
-                            out.writeObject(DBWork.getAllUsers());
+                            out.writeObject(DBWork.getAllUsers(true));
                             break;
                         case 4:
                             LOGGER.info("Удаление пользователей клиентом:" + this.getLogin());
@@ -128,9 +128,11 @@ public class Server {
                             LOGGER.info("Редактирование пользователей клиентом:" + this.getLogin());
                             List<User> editUserList = (List<User>) in.readObject();
                             DBWork.updateAllUsers(editUserList);
+                            break;
                         case 6:
                             LOGGER.info("Подтверждение запросов пользователей клиентом:" + this.getLogin());
-                            out.writeObject(DBWork.getAllUsers());
+                            out.writeObject(DBWork.getAllUsers(false));
+                            break;
                         case -1:
                             connected = false;
                             break;

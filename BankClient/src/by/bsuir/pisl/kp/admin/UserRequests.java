@@ -41,6 +41,7 @@ public class UserRequests extends CustomJFrame{
                                 (String)userTable.getValueAt(i, 2), (String) userTable.getValueAt(i, 3),
                                 (String) userTable.getValueAt(i, 1), (Roles) userTable.getValueAt(i, 4),
                                 true));
+                        users.removeAll(editUserList);
                     }
                 }
                 if(!editUserList.isEmpty()) {
@@ -51,15 +52,14 @@ public class UserRequests extends CustomJFrame{
                         e1.printStackTrace();
                     }
                 }
-
-            }
+                createUIComponents();            }
         });
         setPreferredSize(new Dimension(650, 400));
         pack();
         setContentPane(panel);
         setVisible(true);
     }
-
+//HHjkyT:YG1dB
     private void createUIComponents() {
         try {
             userTable = new JTable();
@@ -102,16 +102,14 @@ public class UserRequests extends CustomJFrame{
             };
             userTable.setModel(tableModel);
             int i = 0;
-            for (User user : users) {
-                if(!user.getSubmited()) {
-                    userTable.setValueAt(user.getId(), i, 0);
-                    userTable.setValueAt(user.getName(), i, 1);
-                    userTable.setValueAt(user.getLogin(), i, 2);
-                    userTable.setValueAt(user.getPassword(), i, 3);
-                    userTable.setValueAt(user.getRole(), i, 4);
-                    userTable.setValueAt(false, i, 5);
-                    i++;
-                }
+            for(User user: users) {
+                userTable.setValueAt(user.getId(), i, 0);
+                userTable.setValueAt(user.getName(), i, 1);
+                userTable.setValueAt(user.getLogin(), i, 2);
+                userTable.setValueAt(user.getPassword(), i, 3);
+                userTable.setValueAt(user.getRole(), i, 4);
+                userTable.setValueAt(false, i, 5);
+                i++;
             }
 
         } catch (IOException e) {

@@ -27,7 +27,7 @@ public class DBWork {
             stmt.setString(2, password);
             ResultSet result = stmt.executeQuery();
             while (result.next()) {
-                user = new User(result.getInt(1), result.getString(2), result.getString(3), result.getString(4), Roles.getRoleById(result.getInt(5)));
+                user = new User(result.getInt(1), result.getString(2), result.getString(3), result.getString(4), Roles.getRoleById(result.getInt(5)), result.getBoolean(6));
             }
 
         } catch (SQLException e) {
@@ -91,16 +91,24 @@ public class DBWork {
 
 
 
-    public static ArrayList<User> getAllUsers() {
+    public static ArrayList<User> getAllUsers(Boolean submitted) {
 
         ArrayList<User> users = new ArrayList<>();
         try {
-            stmt = con.prepareStatement("SELECT u.id, u.login, u.password, u.name, u.role_id\n" +
-                    "FROM bsb_bank.user u\n" +
-                    "ORDER BY u.id");
+            if(submitted != null) {
+                stmt = con.prepareStatement("SELECT u.id, u.login, u.password, u.name, u.role_id, u.submitted\n" +
+                        "FROM bsb_bank.user u\n" +
+                        "WHERE u.submitted = ?\n" +
+                        "ORDER BY u.id");
+                stmt.setBoolean(1, submitted);
+            } else {
+                stmt = con.prepareStatement("SELECT u.id, u.login, u.password, u.name, u.role_id, u.submitted\n" +
+                        "FROM bsb_bank.user u\n" +
+                        "ORDER BY u.id");
+            }
             ResultSet result = stmt.executeQuery();
             while (result.next()) {
-                User user = new User(result.getInt(1), result.getString(2), result.getString(3), result.getString(4), Roles.getRoleById(result.getInt(5)));
+                User user = new User(result.getInt(1), result.getString(2), result.getString(3), result.getString(4), Roles.getRoleById(result.getInt(5)), result.getBoolean(6));
                 users.add(user);
             }
 
@@ -114,12 +122,13 @@ public class DBWork {
         try {
             int i = 0;
             while (i < users.size()) {
-                stmt = con.prepareStatement("UPDATE  `bsb_bank`.`user` SET `login`=?, `password`=?, `name`=?, `role_id`=? WHERE `id`=?;");
+                stmt = con.prepareStatement("UPDATE  `bsb_bank`.`user` SET `login`=?, `password`=?, `name`=?, `role_id`=?, `submitted` = ? WHERE `id`=?;");
                 stmt.setString(1, users.get(i).getLogin());
                 stmt.setString(2, users.get(i).getPassword());
                 stmt.setString(3, users.get(i).getName());
                 stmt.setInt(4, users.get(i).getRole().getId());
-                stmt.setInt(5, users.get(i).getId());
+                stmt.setBoolean(5, users.get(i).getSubmitted());
+                stmt.setInt(6, users.get(i).getId());
                 stmt.executeUpdate();
                 i++;
             }
