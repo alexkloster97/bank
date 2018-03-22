@@ -21,4 +21,5 @@ public class CustomJFrame extends JFrame {
             }
         });
     }
+
 }

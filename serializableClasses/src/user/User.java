@@ -31,27 +31,20 @@ public class User implements Serializable{
         name = "";
     }
 
-    public User(String login, String password, String name, Roles role) {
-        this.login = login;
-        this.name = name;
-        this.password = password;
-        this.role = role;
-    }
-
     public User(String login, String password, String name, Roles role, Boolean submited) {
         this.login = login;
         this.name = name;
         this.password = password;
         this.role = role;
-        this.submited = submited;
+        this.submitted = submited;
     }
 
-    public Boolean getSubmited() {
-        return submited;
+    public Boolean getSubmitted() {
+        return submitted;
     }
 
-    public void setSubmited(Boolean submited) {
-        this.submited = submited;
+    public void setSubmitted(Boolean submitted) {
+        this.submitted = submitted;
     }
 
     private int id;
@@ -59,15 +52,15 @@ public class User implements Serializable{
     private String name;
     private String password;
     private Roles role;
-    private Boolean submited = true;
+    private Boolean submitted = true;
 
-    public User(int id, String login, String password, String name, Roles role, Boolean submited) {
+    public User(int id, String login, String password, String name, Roles role, Boolean submitted) {
         this.id = id;
         this.login = login;
         this.name = name;
         this.password = password;
         this.role = role;
-        this.submited = submited;
+        this.submitted = submitted;
     }
 
     public User(int id, String login, String password, String name, Roles role) {
