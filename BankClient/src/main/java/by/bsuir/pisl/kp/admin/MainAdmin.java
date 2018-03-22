@@ -1,6 +1,5 @@
 package by.bsuir.pisl.kp.admin;
 
-import javax.management.relation.Role;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -9,7 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import by.bsuir.pisl.kp.CustomJFrame;
 import by.bsuir.pisl.kp.authorization.Authorization;
@@ -116,8 +117,6 @@ public class MainAdmin extends CustomJFrame {
         pack();
         setContentPane(panel);
         setVisible(true);
-
-
     }
 
     private void createUIComponents() {
@@ -126,40 +125,14 @@ public class MainAdmin extends CustomJFrame {
             usersTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
             Connection.getOutputStream().writeObject(3);
             users = (ArrayList<User>) Connection.getInputStream().readObject();
-            TableModel tableModel = new DefaultTableModel(users.size(), 6) {
-                String[] user = {"Номер", "Имя", "Логин", "Пароль", "Роль", "▼"};
-
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return true;
-                }
-
-                @Override
-                public String getColumnName(int index) {
-                    return user[index];
-                }
-
-
-                @Override
-                public Class<?> getColumnClass(int columnIndex) {
-                    switch (columnIndex) {
-                        case 0:
-                            return Integer.class;
-                        case 1:
-                            return String.class;
-                        case 2:
-                            return String.class;
-                        case 3:
-                            return String.class;
-                        case 4:
-                            return Roles.class;
-                        case 5:
-                            return Boolean.class;
-                        default:
-                            return Boolean.class;
-                    }
-                }
-            };
+            Map<Integer, Column> columnMap = new HashMap<Integer, Column>();
+            columnMap.put(0, new Column(Integer.class, "ИД", true));
+            columnMap.put(1, new Column(String.class, "Имя", true));
+            columnMap.put(2, new Column(String.class, "Логин", true));
+            columnMap.put(3, new Column(String.class, "Пароль", true));
+            columnMap.put(4, new Column(String.class, "Роль", true));
+            columnMap.put(5, new Column(Boolean.class, "<html><p align=\"center\">▼</p></html>", true));
+            TableModel tableModel = createTableModel(users.size(), columnMap);
             usersTable.setModel(tableModel);
             int i = 0;
             for (User user : users) {
@@ -171,7 +144,7 @@ public class MainAdmin extends CustomJFrame {
                 usersTable.setValueAt(false, i, 5);
                 i++;
             }
-            ;
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

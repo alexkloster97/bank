@@ -1,8 +1,10 @@
 package by.bsuir.pisl.kp.database;
 
 
+import client.Client;
 import org.apache.log4j.Logger;
 
+import sun.misc.Cleaner;
 import user.Roles;
 import user.User;
 
@@ -117,6 +119,24 @@ public class DBWork {
             e.printStackTrace();
         }
         return users;
+    }
+
+    public static List<Client> getAllClients() {
+        List <Client> clients = new ArrayList<Client>();
+        try {
+            stmt = con.prepareStatement("SELECT * FROM bsb_bank.clients ORDER BY id");
+            ResultSet result = stmt.executeQuery();
+            while (result.next()) {
+                Client client = new Client(result.getInt("id"), result.getString("name"),
+                        result.getDate("birth_date"), result.getString("pasport_seria"),
+                        result.getInt("pasport_nuber"), result.getString("phone_number"),
+                        result.getString("address"));
+                clients.add(client);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return clients;
     }
 
     public static void updateAllUsers(List<User> users) {

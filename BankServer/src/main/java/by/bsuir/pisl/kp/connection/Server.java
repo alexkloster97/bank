@@ -133,6 +133,10 @@ public class Server {
                             LOGGER.info("Подтверждение запросов пользователей клиентом:" + this.getLogin());
                             out.writeObject(DBWork.getAllUsers(false));
                             break;
+                        case 7:
+                            LOGGER.info("Список клиентов банка отправлен пользователю:" + this.getLogin());
+                            out.writeObject(DBWork.getAllClients());
+                            break;
                         case -1:
                             connected = false;
                             break;

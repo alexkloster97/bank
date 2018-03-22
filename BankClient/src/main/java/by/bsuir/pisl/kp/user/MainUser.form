@@ -16,14 +16,14 @@
           <text value="Клиенты:"/>
         </properties>
       </component>
-      <scrollpane id="37906">
+      <scrollpane id="37906" binding="scrollPane">
         <constraints>
           <grid row="1" column="0" row-span="4" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
         <children>
-          <component id="3b04a" class="javax.swing.JTable" binding="table1" default-binding="true">
+          <component id="3b04a" class="javax.swing.JTable" binding="clientsTable" custom-create="true">
             <constraints/>
             <properties/>
           </component>
