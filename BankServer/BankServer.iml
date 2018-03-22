@@ -10,8 +10,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="lib" level="project" />
     <orderEntry type="module" module-name="serializableClasses" exported="" />
-    <orderEntry type="library" name="mysql:mysql-connector-java:6.0.6" level="project" />
+    <orderEntry type="library" exported="" name="mysql:mysql-connector-java:6.0.6" level="project" />
+    <orderEntry type="library" exported="" name="log4j-1.2.17" level="project" />
   </component>
 </module>
