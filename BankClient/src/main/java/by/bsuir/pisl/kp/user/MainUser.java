@@ -35,7 +35,7 @@ public class MainUser extends CustomJFrame {
     private JScrollPane scrollPane;
     private ArrayList<Client> clients;
 
-    public MainUser() {
+    public MainUser(User user) {
         super("БСБ Банк");
         backButton.addActionListener(new ActionListener() {
             @Override
@@ -45,11 +45,42 @@ public class MainUser extends CustomJFrame {
             }
         });
         exitButton.addActionListener(new ActionListener() {
-                                         @Override
-                                         public void actionPerformed(ActionEvent e) {
-                                             Connection.close();
-                                             System.exit(0);
-                                         }});
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Connection.close();
+                System.exit(0);
+            }
+        });
+        paymentButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new PayWindow(user);
+                dispose();
+            }
+        });
+        clientsTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JTable table = (JTable) e.getSource();
+                Point point = e.getPoint();
+                int row = table.rowAtPoint(point);
+                if (e.getClickCount() == 2) {
+                    JOptionPane.showMessageDialog(null,
+                            "Добро пожаловать, " + clientsTable.getValueAt(row, 1),
+                            "Добро пожаловать!",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    Client client = null;
+                    for (Client cl : clients) {
+                        if (cl.getId() == (Integer) clientsTable.getValueAt(row, 0)) {
+                            client = cl;
+                            break;
+                        }
+                    }
+                    new PayWindow(client, user);
+                    dispose();
+                }
+            }
+        });
         setPreferredSize(new Dimension(650, 400));
         pack();
         setContentPane(panel);
@@ -75,26 +106,12 @@ public class MainUser extends CustomJFrame {
                 clientsTable.setValueAt(client.getId(), i, 0);
                 clientsTable.setValueAt(client.getName(), i, 1);
                 clientsTable.setValueAt(client.getBirth(), i, 2);
-                clientsTable.setValueAt(client.getPassportSeria()+client.getPassportNumber(), i, 3);
+                clientsTable.setValueAt(client.getPassportSeria() + client.getPassportNumber(), i, 3);
                 clientsTable.setValueAt(client.getPhone(), i, 4);
                 clientsTable.setValueAt(client.getAddress(), i, 5);
                 i++;
             }
             setColumnWidth(clientsTable, columnMap);
-            clientsTable.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    JTable table =(JTable) e.getSource();
-                    Point point = e.getPoint();
-                    int row = table.rowAtPoint(point);
-                    if (e.getClickCount() == 2) {
-                        JOptionPane.showMessageDialog(null,
-                                "Добро пожаловать, " + clientsTable.getValueAt(row, 1),
-                                "Добро пожаловать!",
-                                JOptionPane.INFORMATION_MESSAGE);
-                    }
-                }
-            });
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

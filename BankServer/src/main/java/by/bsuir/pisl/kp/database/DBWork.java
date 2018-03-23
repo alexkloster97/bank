@@ -4,6 +4,8 @@ package by.bsuir.pisl.kp.database;
 import client.Client;
 import org.apache.log4j.Logger;
 
+import payment.Payment;
+import payment.PaymentType;
 import sun.misc.Cleaner;
 import user.Roles;
 import user.User;
@@ -156,5 +158,41 @@ public class DBWork {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<Payment> getPaymentsByClientAndUser(Client client, User user) {
+        List<Payment> payments = new ArrayList<Payment>();
+        try {
+            if(client != null) {
+                stmt = con.prepareStatement("SELECT\n" +
+                        "  p.id        AS payment_id,\n" +
+                        "  p.description,\n" +
+                        "  p.payment_type_id,\n" +
+                        "  p.number,\n" +
+                        "  p.summ,\n" +
+                        "  p.client_id AS client_id,\n" +
+                        "  c.name AS client_name,\n" +
+                        "  u.id        AS user_id,\n" +
+                        "  u.name      AS user_name\n" +
+                        "FROM bsb_bank.payments p\n" +
+                        "  JOIN bsb_bank.clients c ON p.client_id = c.id\n" +
+                        "  JOIN bsb_bank.user u ON u.id = p.user_id\n" +
+                        "WHERE c.id = ?");
+                stmt.setInt(1, client.getId());
+            } else {
+                stmt = con.prepareStatement("SELECT * FROM bsb_bank.payments p JOIN bsb_bank.clients c on p.client_id = c.id");
+            }
+            ResultSet resultSet = stmt.executeQuery();
+            while(resultSet.next()) {
+                Payment payment = new Payment(resultSet.getInt("payment_id"), resultSet.getString("description"),
+                        PaymentType.getById(resultSet.getInt("payment_type_id")), resultSet.getInt("number"),
+                        resultSet.getDouble("summ"), resultSet.getInt("client_id"), resultSet.getString("client_name"),
+                        resultSet.getInt("user_id"), resultSet.getString("user_name"));
+                payments.add(payment);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return  payments;
     }
 }

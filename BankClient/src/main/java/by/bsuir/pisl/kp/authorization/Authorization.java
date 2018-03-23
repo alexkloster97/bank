@@ -75,7 +75,7 @@ public class Authorization extends CustomJFrame {
                             if (user.getRole().equals(Roles.ADMINISTRATOR)) {
                                 new MainAdmin();
                             } else if (user.getRole().equals(Roles.USER)) {
-                                new MainUser();
+                                new MainUser(user);
                             }
                             dispose();
                         }
