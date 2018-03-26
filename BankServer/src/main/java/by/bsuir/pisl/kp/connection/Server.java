@@ -3,6 +3,7 @@ package by.bsuir.pisl.kp.connection;
 import by.bsuir.pisl.kp.database.DBWork;
 import client.Client;
 import org.apache.log4j.Logger;
+import payment.Payment;
 import user.User;
 
 import java.io.IOException;
@@ -142,6 +143,15 @@ public class Server {
                             Client client = (Client) in.readObject();
                             out.writeObject(DBWork.getPaymentsByClientAndUser(client, user));
                             LOGGER.info("Список платежей отправлен пользователю:" + this.getLogin());
+                            break;
+                        case 9:
+                            Payment payment = (Payment)in.readObject();
+                            DBWork.addPayment(payment);
+                            break;
+                        case 10:
+                            client = (Client) in.readObject();
+                            client = DBWork.addClient(client);
+                            out.writeObject(client);
                             break;
                         case -1:
                             connected = false;

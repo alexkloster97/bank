@@ -180,8 +180,19 @@ public class DBWork {
                         "WHERE c.id = ?");
                 stmt.setInt(1, client.getId());
             } else {
-                stmt = con.prepareStatement("SELECT * FROM bsb_bank.payments p JOIN bsb_bank.clients c on p.client_id = c.id");
-            }
+                stmt = con.prepareStatement("SELECT\n" +
+                        "  p.id        AS payment_id,\n" +
+                        "  p.description,\n" +
+                        "  p.payment_type_id,\n" +
+                        "  p.number,\n" +
+                        "  p.summ,\n" +
+                        "  p.client_id AS client_id,\n" +
+                        "  c.name AS client_name,\n" +
+                        "  u.id        AS user_id,\n" +
+                        "  u.name      AS user_name\n" +
+                        "FROM bsb_bank.payments p\n" +
+                        "  JOIN bsb_bank.clients c ON p.client_id = c.id\n" +
+                        "  JOIN bsb_bank.user u ON u.id = p.user_id");            }
             ResultSet resultSet = stmt.executeQuery();
             while(resultSet.next()) {
                 Payment payment = new Payment(resultSet.getInt("payment_id"), resultSet.getString("description"),
@@ -194,5 +205,40 @@ public class DBWork {
             e.printStackTrace();
         }
         return  payments;
+    }
+
+    public static void addPayment(Payment payment) {
+        try {
+            stmt = con.prepareStatement("INSERT INTO  payments (description, payment_type_id, number, summ, client_id, user_id) VALUES (?,?,?,?,?,?);");
+            stmt.setString(1, payment.getDescription());
+            stmt.setInt(2, payment.getPayment_type().getId());
+            stmt.setInt(3, payment.getNumber());
+            stmt.setDouble(4, payment.getSumm());
+            stmt.setInt(5, payment.getClient_id());
+            stmt.setInt(6, payment.getUser_id());
+            stmt.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Client addClient (Client client) {
+        try {
+            stmt = con.prepareStatement("insert into clients (name, phone_number, pasport_seria, pasport_nuber, address, birth_date) values (?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, client.getName());
+            stmt.setString(2, client.getPhone());
+            stmt.setString(3, client.getPassportSeria());
+            stmt.setInt(4, client.getPassportNumber());
+            stmt.setString(5, client.getAddress());
+            stmt.setDate(6, client.getBirth());
+            stmt.executeUpdate();
+            ResultSet resultSet = stmt.getGeneratedKeys();
+            if(resultSet.next()) {
+                client.setId(resultSet.getInt(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return client;
     }
 }

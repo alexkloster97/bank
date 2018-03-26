@@ -5,6 +5,12 @@ import java.sql.Date;
 
 public class Client implements Serializable{
 
+    public Client(String name, String passportSeria, Integer passportNumber) {
+        this.name = name;
+        this.passportSeria = passportSeria;
+        this.passportNumber = passportNumber;
+    }
+
     public int getId() {
         return id;
     }

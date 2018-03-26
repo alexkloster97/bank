@@ -1,5 +1,8 @@
 package payment;
 
+import client.Client;
+import user.User;
+
 import java.io.Serializable;
 
 public class Payment implements Serializable{
@@ -113,5 +116,17 @@ public class Payment implements Serializable{
         this.clientName = clientName;
         this.user_id = user_id;
         this.userName = userName;
+    }
+
+
+    public Payment(String description, PaymentType payment_type, Integer number, Double summ, Client client, User user) {
+        this.description = description;
+        this.payment_type = payment_type;
+        this.number = number;
+        this.summ = summ;
+        this.client_id = client.getId();
+        this.clientName = client.getName();
+        this.user_id = user.getId();
+        this.userName = user.getName();
     }
 }

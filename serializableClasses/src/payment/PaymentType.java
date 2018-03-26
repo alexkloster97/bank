@@ -7,8 +7,8 @@ public enum PaymentType implements Serializable{
     TICKET(7, "Билеты"),
     HOME(5, "Квартплата"),
     INTERNET(6, "Интернет"),
-    OTHER(9, "Другое"),
-    PHONE(4, "Телефон");
+    PHONE(4, "Телефон"),
+    OTHER(9, "Другое");
 
     private Integer id;
     private String type;
@@ -41,5 +41,10 @@ public enum PaymentType implements Serializable{
             default:
                 return OTHER;
         }
+    }
+
+    @Override
+    public String toString() {
+        return type;
     }
 }
