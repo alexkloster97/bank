@@ -2,6 +2,7 @@ package by.bsuir.pisl.kp.connection;
 
 import by.bsuir.pisl.kp.database.DBWork;
 import client.Client;
+import deposit.Deposit;
 import org.apache.log4j.Logger;
 import payment.Payment;
 import user.User;
@@ -147,11 +148,22 @@ public class Server {
                         case 9:
                             Payment payment = (Payment)in.readObject();
                             DBWork.addPayment(payment);
+                            LOGGER.info("Платеж  " + payment.getDescription() + " клиента " + payment.getClientName() + "принят пользователем:" + this.getLogin());
                             break;
                         case 10:
                             client = (Client) in.readObject();
                             client = DBWork.addClient(client);
                             out.writeObject(client);
+                            LOGGER.info("Клиент " + client.getName() +" добавлен пользователем: " + this.getLogin());
+                            break;
+                        case 11:
+                            client = (Client) in.readObject();
+                            DBWork.updateClient(client);
+                            LOGGER.info("Клиент " + client.getName() +" обновлен пользователем: " + this.getLogin());
+                            break;
+                        case 12:
+                            out.writeObject(DBWork.getAllDeposits());
+                            LOGGER.info("Список вкладов отправлен пользователю:" + this.getLogin());
                             break;
                         case -1:
                             connected = false;

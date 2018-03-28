@@ -2,11 +2,11 @@ package by.bsuir.pisl.kp.database;
 
 
 import client.Client;
+import deposit.Deposit;
 import org.apache.log4j.Logger;
 
 import payment.Payment;
 import payment.PaymentType;
-import sun.misc.Cleaner;
 import user.Roles;
 import user.User;
 
@@ -72,7 +72,7 @@ public class DBWork {
     public static void deleteUsers(List<Integer> users) {
 
         try {
-            for(Integer id: users) {
+            for (Integer id : users) {
                 stmt = con.prepareStatement("DELETE FROM `bsb_bank`.`user` where `id` = ? ");
                 stmt.setInt(1, id);
                 stmt.executeUpdate();
@@ -85,7 +85,7 @@ public class DBWork {
     private static String getLoginList(List<User> users) {
         StringBuffer str = new StringBuffer();
         String loginList = "";
-        for(User user: users) {
+        for (User user : users) {
             str.append("'");
             str.append(user.getLogin());
             str.append("', ");
@@ -95,12 +95,11 @@ public class DBWork {
     }
 
 
-
     public static ArrayList<User> getAllUsers(Boolean submitted) {
 
         ArrayList<User> users = new ArrayList<>();
         try {
-            if(submitted != null) {
+            if (submitted != null) {
                 stmt = con.prepareStatement("SELECT u.id, u.login, u.password, u.name, u.role_id, u.submitted\n" +
                         "FROM bsb_bank.user u\n" +
                         "WHERE u.submitted = ?\n" +
@@ -124,7 +123,7 @@ public class DBWork {
     }
 
     public static List<Client> getAllClients() {
-        List <Client> clients = new ArrayList<Client>();
+        List<Client> clients = new ArrayList<Client>();
         try {
             stmt = con.prepareStatement("SELECT * FROM bsb_bank.clients ORDER BY id");
             ResultSet result = stmt.executeQuery();
@@ -163,7 +162,7 @@ public class DBWork {
     public static List<Payment> getPaymentsByClientAndUser(Client client, User user) {
         List<Payment> payments = new ArrayList<Payment>();
         try {
-            if(client != null) {
+            if (client != null) {
                 stmt = con.prepareStatement("SELECT\n" +
                         "  p.id        AS payment_id,\n" +
                         "  p.description,\n" +
@@ -192,9 +191,10 @@ public class DBWork {
                         "  u.name      AS user_name\n" +
                         "FROM bsb_bank.payments p\n" +
                         "  JOIN bsb_bank.clients c ON p.client_id = c.id\n" +
-                        "  JOIN bsb_bank.user u ON u.id = p.user_id");            }
+                        "  JOIN bsb_bank.user u ON u.id = p.user_id");
+            }
             ResultSet resultSet = stmt.executeQuery();
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 Payment payment = new Payment(resultSet.getInt("payment_id"), resultSet.getString("description"),
                         PaymentType.getById(resultSet.getInt("payment_type_id")), resultSet.getInt("number"),
                         resultSet.getDouble("summ"), resultSet.getInt("client_id"), resultSet.getString("client_name"),
@@ -204,7 +204,7 @@ public class DBWork {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return  payments;
+        return payments;
     }
 
     public static void addPayment(Payment payment) {
@@ -222,7 +222,7 @@ public class DBWork {
         }
     }
 
-    public static Client addClient (Client client) {
+    public static Client addClient(Client client) {
         try {
             stmt = con.prepareStatement("insert into clients (name, phone_number, pasport_seria, pasport_nuber, address, birth_date) values (?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, client.getName());
@@ -233,12 +233,45 @@ public class DBWork {
             stmt.setDate(6, client.getBirth());
             stmt.executeUpdate();
             ResultSet resultSet = stmt.getGeneratedKeys();
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 client.setId(resultSet.getInt(1));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return client;
+    }
+
+    public static void updateClient(Client client) {
+        try {
+            stmt = con.prepareStatement("UPDATE clients SET name = ?, phone_number = ?, pasport_seria = ?, pasport_nuber = ?, address = ?, birth_date = ? WHERE id = ?");
+            stmt.setString(1, client.getName());
+            stmt.setString(2, client.getPhone());
+            stmt.setString(3, client.getPassportSeria());
+            stmt.setInt(4, client.getPassportNumber());
+            stmt.setString(5, client.getAddress());
+            stmt.setDate(6, client.getBirth());
+            stmt.setInt(7, client.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<Deposit> getAllDeposits() {
+        ArrayList<Deposit> deposits = new ArrayList<Deposit>();
+        try {
+            stmt = con.prepareStatement("SELECT * FROM bsb_bank.deposit d JOIN bsb_bank.currency c on d.currency_id = c.id");
+            ResultSet resultSet = stmt.executeQuery();
+            while(resultSet.next()) {
+                Deposit deposit = new Deposit(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getDouble(3), resultSet.getInt(4), resultSet.getDouble(5),
+                        resultSet.getInt(6), resultSet.getBoolean(7), resultSet.getString(9));
+                deposits.add(deposit);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return deposits;
     }
 }

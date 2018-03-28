@@ -93,4 +93,9 @@ public class Client implements Serializable{
         this.phone = phone;
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

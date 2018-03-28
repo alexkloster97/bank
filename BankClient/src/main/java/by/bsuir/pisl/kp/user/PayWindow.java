@@ -3,6 +3,7 @@ package by.bsuir.pisl.kp.user;
 import by.bsuir.pisl.kp.CustomJFrame;
 import by.bsuir.pisl.kp.connection.Connection;
 import client.Client;
+import com.toedter.calendar.JDateChooser;
 import payment.Payment;
 import payment.PaymentType;
 import user.User;
@@ -14,10 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,25 +24,27 @@ public class PayWindow extends CustomJFrame {
 
     private JTable paymetsTable;
     private JButton payButton;
-    private JTextField name;
     private JComboBox<PaymentType> paymentType;
     private JButton exitButton;
     private JButton backButton;
     private JPanel clientPanel;
     private JSpinner summ;
-    private JTextField birth;
-    private JTextField phone;
-    private JTextField pasport;
-    private JTextField address;
     private JPanel panel;
     private JTextField description;
     private JTextField number;
     private ArrayList<Payment> payments;
-    private Client client = null;
-    private User user = null;
-    private JButton editButton;
+    protected Client client = null;
+    protected User user = null;
+    protected JDateChooser birth;
+    protected JTextField phone;
+    protected JTextField pasport;
+    protected JTextField address;
+    protected JButton editButton;
+    protected JButton save;
+    protected JTextField name;
 
-    PayWindow(Client client, User user) {
+
+    public PayWindow(Client client, User user) {
         super("БСБ Банк");
         this.client = client;
         this.user = user;
@@ -96,29 +95,53 @@ public class PayWindow extends CustomJFrame {
                 }
             }
         });
+        editButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enableFields(true);
+            }
+        });
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (name.getText().isEmpty() || pasport.getText().isEmpty()) {
+                    if (name.getText().isEmpty()) {
+                        name.setBorder(BorderFactory.createLineBorder(Color.red));
+                    }
+                    if (pasport.getText().isEmpty()) {
+                        pasport.setBorder(BorderFactory.createLineBorder(Color.red));
+                    }
+                    JOptionPane.showMessageDialog(null,
+                            "Заполните обязательные поля",
+                            "Неверные данные",
+                            JOptionPane.WARNING_MESSAGE);
+                } else {
+                    try {
+                        SwingUtilities.updateComponentTreeUI(pasport);
+                        SwingUtilities.updateComponentTreeUI(name);
+                        String seriaPass = pasport.getText().substring(0, 2);
+                        Integer numberPass = Integer.parseInt(pasport.getText().substring(2, pasport.getText().length()));
+                        client.setName(name.getText());
+                        client.setPassportSeria(seriaPass);
+                        client.setPassportNumber(numberPass);
+                        client.setBirth(new Date(birth.getDate().getTime()));
+                        client.setAddress(address.getText());
+                        client.setPhone(phone.getText());
+                        Connection.getOutputStream().writeObject(11);
+                        Connection.getOutputStream().writeObject(client);
+                        enableFields(false);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
+                }
+            }
+        });
+
         setPreferredSize(new Dimension(650, 400));
         pack();
         setContentPane(panel);
         setVisible(true);
-    }
-
-    private void initClient() {
-        name.setText(client.getName());
-        name.setEditable(false);
-        if(client.getBirth() != null) {
-            birth.setText(client.getBirth().toString());
-            birth.setEditable(false);
-        }
-        if(client.getPhone() != null && !client.getPhone().isEmpty()) {
-            phone.setText(client.getPhone());
-            phone.setEditable(false);
-        }
-        pasport.setText(client.getPassportSeria() + client.getPassportNumber());
-        pasport.setEditable(false);
-        if(client.getAddress() != null && !client.getAddress().isEmpty()) {
-            address.setText(client.getAddress());
-            address.setEditable(false);
-        }
     }
 
     private void initFields() {
@@ -128,8 +151,10 @@ public class PayWindow extends CustomJFrame {
         summ.setModel(model);
         JSpinner.NumberEditor editor = new JSpinner.NumberEditor(summ);
         summ.setEditor(editor);
+        save.setVisible(false);
 
     }
+    
 
     PayWindow(User user) {
         super("БСБ Банк");
@@ -182,15 +207,9 @@ public class PayWindow extends CustomJFrame {
                             JOptionPane.WARNING_MESSAGE);
                 } else {
                     try {
-                        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                        Date date = null;
-                        if (!birth.getText().isEmpty()) {
-                            date = new Date(format.parse(birth.getText()).getTime());
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                        }
-                        String seriaPass = pasport.getText().substring(0, 2);
-                        Integer numberPass = Integer.parseInt(pasport.getText().substring(2, pasport.getText().length()));
-                        Client client = new Client(name.getText(), date, seriaPass, numberPass, phone.getText(), address.getText()) ;
+                        String seriapasport = pasport.getText().substring(0, 2);
+                        Integer numberpasport = Integer.parseInt(pasport.getText().substring(2, pasport.getText().length()));
+                        Client client = new Client(name.getText(), new Date(birth.getDate().getTime()), seriapasport, numberpasport, phone.getText(), address.getText()) ;
                         Connection.getOutputStream().writeObject(10);
                         Connection.getOutputStream().writeObject(client);
                         client = (Client) Connection.getInputStream().readObject();
@@ -202,19 +221,49 @@ public class PayWindow extends CustomJFrame {
                                 "Успех", JOptionPane.INFORMATION_MESSAGE);
                     } catch (IOException e1) {
                         e1.printStackTrace();
-                    } catch (ParseException e1) {
-                        e1.printStackTrace();
                     } catch (ClassNotFoundException e1) {
                         e1.printStackTrace();
                     }
                 }
             }
         });
+
         initFields();
         setPreferredSize(new Dimension(650, 400));
         pack();
         setContentPane(panel);
         setVisible(true);
+    }
+
+
+    protected void initClient() {
+        name.setText(client.getName());
+        name.setEditable(false);
+        if(client.getBirth() != null) {
+            birth.setDate(client.getBirth());
+            birth.setEnabled(false);
+        }
+        if(client.getPhone() != null && !client.getPhone().isEmpty()) {
+            phone.setText(client.getPhone());
+            phone.setEditable(false);
+        }
+        pasport.setText(client.getPassportSeria() + client.getPassportNumber());
+        pasport.setEditable(false);
+        if(client.getAddress() != null && !client.getAddress().isEmpty()) {
+            address.setText(client.getAddress());
+            address.setEditable(false);
+        }
+    }
+
+
+
+    protected void enableFields(Boolean isEditable) {
+        name.setEditable(isEditable);
+        pasport.setEditable(isEditable);
+        phone.setEditable(isEditable);
+        address.setEditable(isEditable);
+        birth.setEnabled(isEditable);
+        save.setVisible(isEditable);
     }
 
     private void createUIComponents() {

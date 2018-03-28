@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 
-public class AddUserWindow extends  JFrame{
+public class AddUserWindow extends JFrame {
     private JTextField login;
     private JPasswordField password;
     private JTextField name;
@@ -31,19 +31,19 @@ public class AddUserWindow extends  JFrame{
                 login.setBorder(null);
                 password.setBorder(null);
                 name.setBorder(null);
-                if(login.getText().isEmpty()||password.getText().isEmpty()||name.getText().isEmpty()){
-                    if(login.getText().isEmpty())
+                if (login.getText().isEmpty() || password.getText().isEmpty() || name.getText().isEmpty()) {
+                    if (login.getText().isEmpty())
                         login.setBorder(BorderFactory.createLineBorder(Color.red));
-                    if(password.getText().isEmpty())
+                    if (password.getText().isEmpty())
                         password.setBorder(BorderFactory.createLineBorder(Color.red));
-                    if(name.getText().isEmpty())
+                    if (name.getText().isEmpty())
                         name.setBorder(BorderFactory.createLineBorder(Color.red));
                     JOptionPane.showMessageDialog(null,
                             "Заполните все поля!",
                             "Ошибка",
                             JOptionPane.WARNING_MESSAGE);
                 } else {
-                    switch((String)role.getSelectedItem()) {
+                    switch ((String) role.getSelectedItem()) {
                         case "Администратор":
                             user = new User(login.getText(), password.getText(), name.getText(), Roles.getRoleById(1), true);
                             break;
@@ -54,7 +54,7 @@ public class AddUserWindow extends  JFrame{
                     try {
                         Connection.getOutputStream().writeObject(2);
                         Connection.getOutputStream().writeObject(user);
-                        if ((Boolean)Connection.getInputStream().readObject()) {
+                        if ((Boolean) Connection.getInputStream().readObject()) {
                             Connection.getOutputStream().writeObject(3);
                             dispose();
                         } else {
@@ -79,9 +79,10 @@ public class AddUserWindow extends  JFrame{
                 dispose();
             }
         });
-        setPreferredSize(new Dimension(250,300));
+        setPreferredSize(new Dimension(250, 300));
         pack();
         setContentPane(panel);
         setVisible(true);
     }
+
 }

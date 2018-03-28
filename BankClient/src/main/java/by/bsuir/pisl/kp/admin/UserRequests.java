@@ -15,14 +15,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRequests extends CustomJFrame{
+public class UserRequests extends CustomJFrame {
     private JTable userTable;
     private JButton back;
     private JButton submit;
     private JPanel panel;
     private ArrayList<User> users;
-    
-    public UserRequests () {
+
+    public UserRequests() {
         super("Запросы на регистрацию");
         back.addActionListener(new ActionListener() {
             @Override
@@ -35,16 +35,16 @@ public class UserRequests extends CustomJFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 List<User> editUserList = new ArrayList<User>();
-                for(int i = 0; i < userTable.getRowCount(); i++) {
-                    if((Boolean)userTable.getValueAt(i, 5)) {
-                        editUserList.add(new User((Integer)userTable.getValueAt(i, 0),
-                                (String)userTable.getValueAt(i, 2), (String) userTable.getValueAt(i, 3),
+                for (int i = 0; i < userTable.getRowCount(); i++) {
+                    if ((Boolean) userTable.getValueAt(i, 5)) {
+                        editUserList.add(new User((Integer) userTable.getValueAt(i, 0),
+                                (String) userTable.getValueAt(i, 2), (String) userTable.getValueAt(i, 3),
                                 (String) userTable.getValueAt(i, 1), (Roles) userTable.getValueAt(i, 4),
                                 true));
                         users.removeAll(editUserList);
                     }
                 }
-                if(!editUserList.isEmpty()) {
+                if (!editUserList.isEmpty()) {
                     try {
                         Connection.getOutputStream().writeObject(5);
                         Connection.getOutputStream().writeObject(editUserList);
@@ -52,14 +52,16 @@ public class UserRequests extends CustomJFrame{
                         e1.printStackTrace();
                     }
                 }
-                createUIComponents();            }
+                createUIComponents();
+            }
         });
         setPreferredSize(new Dimension(650, 400));
         pack();
         setContentPane(panel);
         setVisible(true);
     }
-//HHjkyT:YG1dB
+
+    //HHjkyT:YG1dB
     private void createUIComponents() {
         try {
             userTable = new JTable();
@@ -102,7 +104,7 @@ public class UserRequests extends CustomJFrame{
             };
             userTable.setModel(tableModel);
             int i = 0;
-            for(User user: users) {
+            for (User user : users) {
                 userTable.setValueAt(user.getId(), i, 0);
                 userTable.setValueAt(user.getName(), i, 1);
                 userTable.setValueAt(user.getLogin(), i, 2);
@@ -118,5 +120,6 @@ public class UserRequests extends CustomJFrame{
             e.printStackTrace();
         }
     }
+
 }
 

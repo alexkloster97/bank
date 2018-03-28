@@ -1,6 +1,8 @@
 package by.bsuir.pisl.kp;
 
 import by.bsuir.pisl.kp.connection.Connection;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.SelectionModel;
 import sun.reflect.generics.tree.ClassTypeSignature;
 
 import javax.swing.*;
@@ -51,6 +53,8 @@ public class CustomJFrame extends JFrame {
         };
         return tableModel;
     }
+
+
 
     protected void setColumnWidth(JTable table, Map<Integer, Column> colums) {
         for(int i = 0; i<colums.size(); i++) {

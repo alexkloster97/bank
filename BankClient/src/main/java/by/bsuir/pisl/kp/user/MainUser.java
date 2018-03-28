@@ -54,21 +54,11 @@ public class MainUser extends CustomJFrame {
         paymentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new PayWindow(user);
-                dispose();
-            }
-        });
-        clientsTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                JTable table = (JTable) e.getSource();
-                Point point = e.getPoint();
-                int row = table.rowAtPoint(point);
-                if (e.getClickCount() == 2) {
-                    JOptionPane.showMessageDialog(null,
-                            "Добро пожаловать, " + clientsTable.getValueAt(row, 1),
-                            "Добро пожаловать!",
-                            JOptionPane.INFORMATION_MESSAGE);
+                int row = clientsTable.getSelectedRow();
+                if (row == -1) {
+                    new PayWindow(user);
+                    dispose();
+                } else {
                     Client client = null;
                     for (Client cl : clients) {
                         if (cl.getId() == (Integer) clientsTable.getValueAt(row, 0)) {
@@ -77,6 +67,26 @@ public class MainUser extends CustomJFrame {
                         }
                     }
                     new PayWindow(client, user);
+                    dispose();
+                }
+            }
+        });
+        depositButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = clientsTable.getSelectedRow();
+                if (row == -1) {
+                    new DepositWindow(user);
+                    dispose();
+                } else {
+                    Client client = null;
+                    for (Client cl : clients) {
+                        if (cl.getId() == (Integer) clientsTable.getValueAt(row, 0)) {
+                            client = cl;
+                            break;
+                        }
+                    }
+                    new DepositWindow(client, user);
                     dispose();
                 }
             }
@@ -101,6 +111,7 @@ public class MainUser extends CustomJFrame {
             columnMap.put(5, new Column(String.class, "Адрес", false, 100));
             TableModel tableModel = createTableModel(clients.size(), columnMap);
             clientsTable.setModel(tableModel);
+            clientsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             int i = 0;
             for (Client client : clients) {
                 clientsTable.setValueAt(client.getId(), i, 0);
@@ -118,4 +129,5 @@ public class MainUser extends CustomJFrame {
             e.printStackTrace();
         }
     }
+
 }

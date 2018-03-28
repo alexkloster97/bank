@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * Created by alexk on 05.12.2016.
  */
-public class Registration extends CustomJFrame{
+public class Registration extends CustomJFrame {
     private JPanel panel;
     private JTextField login;
     private JPasswordField password_1;
@@ -22,6 +22,7 @@ public class Registration extends CustomJFrame{
     private JButton register;
     private JTextField name;
     private User user = new User();
+
     public Registration() {
         super("Регистрация");
         register.addActionListener(new ActionListener() {
@@ -31,14 +32,14 @@ public class Registration extends CustomJFrame{
                 password_2.setBorder(null);
                 password_1.setBorder(null);
                 name.setBorder(null);
-                if(login.getText().isEmpty()||password_1.getText().isEmpty()||password_2.getText().isEmpty()||name.getText().isEmpty()){
-                    if(login.getText().isEmpty())
+                if (login.getText().isEmpty() || password_1.getText().isEmpty() || password_2.getText().isEmpty() || name.getText().isEmpty()) {
+                    if (login.getText().isEmpty())
                         login.setBorder(BorderFactory.createLineBorder(Color.red));
-                    if(password_1.getText().isEmpty())
+                    if (password_1.getText().isEmpty())
                         password_1.setBorder(BorderFactory.createLineBorder(Color.red));
                     if (password_2.getText().isEmpty())
                         password_2.setBorder(BorderFactory.createLineBorder(Color.red));
-                    if(name.getText().isEmpty())
+                    if (name.getText().isEmpty())
                         name.setBorder(BorderFactory.createLineBorder(Color.red));
                     JOptionPane.showMessageDialog(null,
                             "Заполните все поля!",
@@ -57,7 +58,7 @@ public class Registration extends CustomJFrame{
                         try {
                             Connection.getOutputStream().writeObject(2);
                             Connection.getOutputStream().writeObject(user);
-                            if ((Boolean)Connection.getInputStream().readObject()) {
+                            if ((Boolean) Connection.getInputStream().readObject()) {
                                 new Authorization();
                                 dispose();
                             } else {
@@ -76,9 +77,10 @@ public class Registration extends CustomJFrame{
                 }
             }
         });
-        setPreferredSize(new Dimension(250,270));
+        setPreferredSize(new Dimension(250, 270));
         pack();
         setContentPane(panel);
         setVisible(true);
     }
+
 }

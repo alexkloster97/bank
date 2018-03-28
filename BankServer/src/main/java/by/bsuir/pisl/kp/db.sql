@@ -217,3 +217,45 @@ ALTER TABLE bsb_bank.payments add CONSTRAINT user_id_fkey
 FOREIGN KEY (user_id)
 REFERENCES user(id)
   ON DELETE CASCADE;
+
+CREATE TABLE IF NOT EXISTS `bsb_bank`.`deposit` (
+  `id`   INT(11)     NOT NULL AUTO_INCREMENT,
+  `description` VARCHAR(45) NULL     DEFAULT NULL,
+  `percentage` DOUBLE null DEFAULT null,
+  `term` int(11) null DEFAULT NULL ,
+  `min_summ` DOUBLE null DEFAULT NULL ,
+  `currency` VARCHAR(3) NULL DEFAULT null,
+  `capitalization` BOOLEAN null DEFAULT null,
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 4
+  DEFAULT CHARACTER SET = utf8;
+
+
+CREATE TABLE currency
+(
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  currency VARCHAR(3) NOT NULL
+);
+CREATE UNIQUE INDEX currency_currency_uindex ON currency (currency);
+
+
+ALTER TABLE  bsb_bank.deposit CHANGE currency currency_id INT(11) NOT NULL;
+
+
+ALTER TABLE bsb_bank.deposit add CONSTRAINT currency_fkey
+FOREIGN KEY (currency_id)
+REFERENCES currency(id)
+  ON DELETE CASCADE;
+
+
+INSERT INTO bsb_bank.currency (currency.currency) VALUES ('USD');
+INSERT INTO bsb_bank.currency (currency.currency) VALUES ('BYN');
+INSERT INTO bsb_bank.currency (currency.currency) VALUES ('EUR');
+
+
+INSERT INTO bsb_bank.deposit (description, percentage, term, min_summ, currency_id, capitalization) VALUES ('Простой', 5, 24, 1000, 4, TRUE );
+INSERT INTO bsb_bank.deposit (description, percentage, term, min_summ, currency_id, capitalization) VALUES ('Непростой', 10, 48, 6000, 4, FALSE );
+
+

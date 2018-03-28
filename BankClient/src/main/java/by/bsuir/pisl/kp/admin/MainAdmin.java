@@ -90,7 +90,7 @@ public class MainAdmin extends CustomJFrame {
                     }
                 }
                 createUIComponents();
-                ((DefaultTableModel)usersTable.getModel()).fireTableDataChanged();
+                ((DefaultTableModel) usersTable.getModel()).fireTableDataChanged();
             }
         });
         editUserButton.addActionListener(new ActionListener() {

@@ -90,9 +90,10 @@ public class Authorization extends CustomJFrame {
             }
         });
 
-        setPreferredSize(new Dimension(250,250));
+        setPreferredSize(new Dimension(250, 250));
         pack();
         setContentPane(panel);
         setVisible(true);
     }
+
 }
