@@ -259,10 +259,9 @@ INSERT INTO bsb_bank.deposit_type (description, percentage, term, min_summ, curr
 INSERT INTO bsb_bank.deposit_type (description, percentage, term, min_summ, currency_id, capitalization) VALUES ('Непростой', 10, 48, 6000, 4, FALSE );
 
 
-ALTER TABLE bsb_bank.depositType RENAME TO deposit_type;
 
 
-CREATE TABLE depositType
+CREATE TABLE deposit
 (
   id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   deposit_id INT NOT NULL,
