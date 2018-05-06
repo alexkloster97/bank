@@ -3,6 +3,7 @@ package by.bsuir.pisl.kp.database;
 
 import client.Client;
 import deposit.Deposit;
+import deposit.DepositType;
 import org.apache.log4j.Logger;
 
 import payment.Payment;
@@ -258,20 +259,88 @@ public class DBWork {
         }
     }
 
-    public static ArrayList<Deposit> getAllDeposits() {
-        ArrayList<Deposit> deposits = new ArrayList<Deposit>();
+    public static ArrayList<DepositType> getAllDeposits() {
+        ArrayList<DepositType> depositTypes = new ArrayList<DepositType>();
         try {
-            stmt = con.prepareStatement("SELECT * FROM bsb_bank.deposit d JOIN bsb_bank.currency c on d.currency_id = c.id");
+            stmt = con.prepareStatement("SELECT * FROM bsb_bank.deposit_type d JOIN bsb_bank.currency c on d.currency_id = c.id");
             ResultSet resultSet = stmt.executeQuery();
             while(resultSet.next()) {
-                Deposit deposit = new Deposit(resultSet.getInt(1), resultSet.getString(2),
+                DepositType depositType = new DepositType(resultSet.getInt(1), resultSet.getString(2),
                         resultSet.getDouble(3), resultSet.getInt(4), resultSet.getDouble(5),
                         resultSet.getInt(6), resultSet.getBoolean(7), resultSet.getString(9));
-                deposits.add(deposit);
+                depositTypes.add(depositType);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return deposits;
+        return depositTypes;
+    }
+
+    public static void addDeposit(Deposit deposit) {
+        try {
+            stmt = con.prepareStatement("INSERT INTO bsb_bank.deposit (deposit_id, summ, term, start_date, endDate, user_id, client_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            stmt.setInt(1, deposit.getDeposit().getId());
+            stmt.setDouble(2, deposit.getSumm());
+            stmt.setInt(3, deposit.getTerm());
+            stmt.setDate(4, deposit.getStartDate());
+            stmt.setDate(5, deposit.getEndDate());
+            stmt.setInt(6, deposit.getUser().getId());
+            stmt.setInt(7, deposit.getClient().getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static DepositType getDepositTypeById(Integer depositTypeId) {
+        DepositType depositType = null;
+        try{
+            stmt = con.prepareStatement("SELECT * FROM bsb_bank.deposit_type d JOIN bsb_bank.currency c on d.currency_id = c.id WHERE d.id = ?");
+            stmt.setInt(1, depositTypeId);
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                depositType = new DepositType(resultSet.getInt("d.id"), resultSet.getString("description"),
+                        resultSet.getDouble("percentage"), resultSet.getInt("term"), resultSet.getDouble("min_summ"),
+                        resultSet.getInt("c.id"), resultSet.getBoolean("capitalization"), resultSet.getString("currency"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return depositType;
+    }
+
+    public static User getUserById(Integer user_id) {
+        User user = null;
+        try {
+            stmt = con.prepareStatement("SELECT * FROM bsb_bank.user WHERE id = ?");
+            stmt.setInt(1, user_id);
+            ResultSet resultSet = stmt.executeQuery();
+            while(resultSet.next()) {
+                user = new User(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), Roles.getRoleById(resultSet.getInt(5)), resultSet.getBoolean(6));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    public static ArrayList<Deposit> selectDepositsOfClient(Client client) {
+        ArrayList<Deposit> depositList = new ArrayList<Deposit>();
+        try{
+            stmt = con.prepareStatement("SELECT * FROM bsb_bank.deposit d JOIN bsb_bank.deposit_type dt on d.deposit_id = dt.id  WHERE d.client_id = ?");
+            stmt.setInt(1, client.getId());
+            ResultSet resultSet = stmt.executeQuery();
+            while(resultSet.next()) {
+                DepositType depositType = getDepositTypeById(resultSet.getInt("d.deposit_id"));
+                User user = getUserById(resultSet.getInt("d.user_id"));
+                Deposit deposit = new Deposit(resultSet.getInt("d.id"), depositType, resultSet.getDouble("d.summ"),
+                        resultSet.getDate("d.start_date"), resultSet.getDate("d.end_date"),
+                        resultSet.getInt("d.term"), client, user);
+                depositList.add(deposit);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return depositList;
     }
 }

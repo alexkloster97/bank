@@ -165,11 +165,13 @@
               <text value="Вклад"/>
             </properties>
           </component>
-          <component id="36035" class="javax.swing.JComboBox" binding="depos" custom-create="true">
+          <component id="36035" class="javax.swing.JComboBox" binding="depos">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <editable value="false"/>
+            </properties>
           </component>
           <component id="cf192" class="javax.swing.JLabel">
             <constraints>
@@ -198,7 +200,7 @@
           <component id="22a7a" class="javax.swing.JTextField" binding="percentage">
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                <preferred-size width="40" height="-1"/>
+                <preferred-size width="50" height="-1"/>
               </grid>
             </constraints>
             <properties>
@@ -217,11 +219,12 @@
           <component id="aa50d" class="javax.swing.JTextField" binding="minTerm">
             <constraints>
               <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                <preferred-size width="40" height="-1"/>
+                <preferred-size width="50" height="-1"/>
               </grid>
             </constraints>
             <properties>
               <editable value="false"/>
+              <text value=""/>
             </properties>
           </component>
           <component id="3215b" class="javax.swing.JTextField" binding="minSumm">

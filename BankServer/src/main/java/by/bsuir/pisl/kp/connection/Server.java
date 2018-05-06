@@ -88,6 +88,7 @@ public class Server {
             try {
                 Boolean connected = true;
                 User user = new User();
+                Client client = null;
                 out = new ObjectOutputStream(socket.getOutputStream());
                 in = new ObjectInputStream(socket.getInputStream());
                 synchronized (connections) {
@@ -141,7 +142,7 @@ public class Server {
                             out.writeObject(DBWork.getAllClients());
                             break;
                         case 8:
-                            Client client = (Client) in.readObject();
+                            client = (Client) in.readObject();
                             out.writeObject(DBWork.getPaymentsByClientAndUser(client, user));
                             LOGGER.info("Список платежей отправлен пользователю:" + this.getLogin());
                             break;
@@ -164,6 +165,16 @@ public class Server {
                         case 12:
                             out.writeObject(DBWork.getAllDeposits());
                             LOGGER.info("Список вкладов отправлен пользователю:" + this.getLogin());
+                            break;
+                        case 13:
+                            Deposit deposit = (Deposit)in.readObject();
+                            DBWork.addDeposit(deposit);
+                            LOGGER.info("Вклад " + deposit.getDeposit().getDescription() + " клиента " + deposit.getClient().getName() + " принят пользователем:" + this.getLogin());
+                            break;
+                        case 14:
+                            client = (Client) in.readObject();
+                            ArrayList<Deposit> deposits = DBWork.selectDepositsOfClient(client);
+                            out.writeObject(deposits);
                             break;
                         case -1:
                             connected = false;

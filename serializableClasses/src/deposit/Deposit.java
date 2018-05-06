@@ -1,45 +1,43 @@
 package deposit;
 
+import client.Client;
+import user.User;
+
 import java.io.Serializable;
+import java.sql.Date;
 
 public class Deposit implements Serializable {
+
     private Integer id;
-    private String description;
-    private Double percentage;
+    private DepositType deposit;
+    private Double summ;
+    private Date startDate;
+    private Date endDate;
     private Integer term;
-    private Double min_summ;
-    private Integer currency_id;
-    private Boolean capitalization;
-    private String currency;
+    private Client client;
+    private User user;
 
-    public Deposit(Integer id, String description, Double percentage, Integer term, Double min_summ, Integer currency_id, Boolean capitalization, String currency) {
+    public Deposit(Integer id, DepositType deposit, Double summ, Date startDate, Date endDate, Integer term, Client client, User user) {
         this.id = id;
-        this.description = description;
-        this.percentage = percentage;
+        this.deposit = deposit;
+        this.summ = summ;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.term = term;
-        this.min_summ = min_summ;
-        this.currency_id = currency_id;
-        this.capitalization = capitalization;
-        this.currency = currency;
+        this.client = client;
+        this.user = user;
     }
 
-    public Deposit(String description, Double percentage, Integer term, Double min_summ, Integer currency_id, Boolean capitalization, String currency) {
-        this.description = description;
-        this.percentage = percentage;
+    public Deposit(DepositType deposit, Double summ, Date startDate, Date endDate, Integer term, Client client, User user) {
+        this.deposit = deposit;
+        this.summ = summ;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.term = term;
-        this.min_summ = min_summ;
-        this.currency_id = currency_id;
-        this.capitalization = capitalization;
-        this.currency = currency;
+        this.client = client;
+        this.user = user;
     }
 
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
 
     public Integer getId() {
         return id;
@@ -49,20 +47,20 @@ public class Deposit implements Serializable {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public DepositType getDeposit() {
+        return deposit;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDeposit(DepositType deposit) {
+        this.deposit = deposit;
     }
 
-    public Double getPercentage() {
-        return percentage;
+    public Double getSumm() {
+        return summ;
     }
 
-    public void setPercentage(Double percentage) {
-        this.percentage = percentage;
+    public void setSumm(Double summ) {
+        this.summ = summ;
     }
 
     public Integer getTerm() {
@@ -73,33 +71,35 @@ public class Deposit implements Serializable {
         this.term = term;
     }
 
-    public Double getMin_summ() {
-        return min_summ;
+    public Client getClient() {
+        return client;
     }
 
-    public void setMin_summ(Double min_summ) {
-        this.min_summ = min_summ;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    public Integer getCurrency_id() {
-        return currency_id;
+    public User getUser() {
+        return user;
     }
 
-    public void setCurrency_id(Integer currency_id) {
-        this.currency_id = currency_id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Boolean getCapitalization() {
-        return capitalization;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setCapitalization(Boolean capitalization) {
-        this.capitalization = capitalization;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
+    public Date getEndDate() {
+        return endDate;
+    }
 
-    @Override
-    public String toString() {
-        return description;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }

@@ -154,7 +154,7 @@ public class PayWindow extends CustomJFrame {
         save.setVisible(false);
 
     }
-    
+
 
     PayWindow(User user) {
         super("БСБ Банк");
@@ -209,7 +209,7 @@ public class PayWindow extends CustomJFrame {
                     try {
                         String seriapasport = pasport.getText().substring(0, 2);
                         Integer numberpasport = Integer.parseInt(pasport.getText().substring(2, pasport.getText().length()));
-                        Client client = new Client(name.getText(), new Date(birth.getDate().getTime()), seriapasport, numberpasport, phone.getText(), address.getText()) ;
+                        Client client = new Client(name.getText(), new Date(birth.getDate().getTime()), seriapasport, numberpasport, phone.getText(), address.getText());
                         Connection.getOutputStream().writeObject(10);
                         Connection.getOutputStream().writeObject(client);
                         client = (Client) Connection.getInputStream().readObject();
@@ -239,22 +239,21 @@ public class PayWindow extends CustomJFrame {
     protected void initClient() {
         name.setText(client.getName());
         name.setEditable(false);
-        if(client.getBirth() != null) {
+        if (client.getBirth() != null) {
             birth.setDate(client.getBirth());
             birth.setEnabled(false);
         }
-        if(client.getPhone() != null && !client.getPhone().isEmpty()) {
+        if (client.getPhone() != null && !client.getPhone().isEmpty()) {
             phone.setText(client.getPhone());
             phone.setEditable(false);
         }
         pasport.setText(client.getPassportSeria() + client.getPassportNumber());
         pasport.setEditable(false);
-        if(client.getAddress() != null && !client.getAddress().isEmpty()) {
+        if (client.getAddress() != null && !client.getAddress().isEmpty()) {
             address.setText(client.getAddress());
             address.setEditable(false);
         }
     }
-
 
 
     protected void enableFields(Boolean isEditable) {
@@ -301,4 +300,5 @@ public class PayWindow extends CustomJFrame {
             e.printStackTrace();
         }
     }
+
 }

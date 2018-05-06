@@ -86,7 +86,14 @@ public class MainUser extends CustomJFrame {
                             break;
                         }
                     }
+                    try {
+                        Connection.getOutputStream().writeObject(14);
+                        Connection.getOutputStream().writeObject(client);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                     new DepositWindow(client, user);
+
                     dispose();
                 }
             }

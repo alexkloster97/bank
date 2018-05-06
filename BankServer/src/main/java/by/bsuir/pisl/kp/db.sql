@@ -218,7 +218,7 @@ FOREIGN KEY (user_id)
 REFERENCES user(id)
   ON DELETE CASCADE;
 
-CREATE TABLE IF NOT EXISTS `bsb_bank`.`deposit` (
+CREATE TABLE IF NOT EXISTS `bsb_bank`.`depositType` (
   `id`   INT(11)     NOT NULL AUTO_INCREMENT,
   `description` VARCHAR(45) NULL     DEFAULT NULL,
   `percentage` DOUBLE null DEFAULT null,
@@ -241,10 +241,10 @@ CREATE TABLE currency
 CREATE UNIQUE INDEX currency_currency_uindex ON currency (currency);
 
 
-ALTER TABLE  bsb_bank.deposit CHANGE currency currency_id INT(11) NOT NULL;
+ALTER TABLE  bsb_bank.deposit_type CHANGE currency currency_id INT(11) NOT NULL;
 
 
-ALTER TABLE bsb_bank.deposit add CONSTRAINT currency_fkey
+ALTER TABLE bsb_bank.deposit_type add CONSTRAINT currency_fkey
 FOREIGN KEY (currency_id)
 REFERENCES currency(id)
   ON DELETE CASCADE;
@@ -255,7 +255,31 @@ INSERT INTO bsb_bank.currency (currency.currency) VALUES ('BYN');
 INSERT INTO bsb_bank.currency (currency.currency) VALUES ('EUR');
 
 
-INSERT INTO bsb_bank.deposit (description, percentage, term, min_summ, currency_id, capitalization) VALUES ('Простой', 5, 24, 1000, 4, TRUE );
-INSERT INTO bsb_bank.deposit (description, percentage, term, min_summ, currency_id, capitalization) VALUES ('Непростой', 10, 48, 6000, 4, FALSE );
+INSERT INTO bsb_bank.deposit_type (description, percentage, term, min_summ, currency_id, capitalization) VALUES ('Простой', 5, 24, 1000, 4, TRUE );
+INSERT INTO bsb_bank.deposit_type (description, percentage, term, min_summ, currency_id, capitalization) VALUES ('Непростой', 10, 48, 6000, 4, FALSE );
 
 
+ALTER TABLE bsb_bank.depositType RENAME TO deposit_type;
+
+
+CREATE TABLE depositType
+(
+  id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  deposit_id INT NOT NULL,
+  summ DOUBLE NOT NULL,
+  term INT NOT NULL,
+  start_date DATE NOT NULL,
+  client_id INT NOT NULL,
+  user_id INT NOT NULL,
+  CONSTRAINT deposit_id_fk FOREIGN KEY (deposit_id) REFERENCES deposit_type (id),
+  CONSTRAINT deposit_client_id_fk FOREIGN KEY (client_id) REFERENCES clients (id),
+  CONSTRAINT deposit_user_id_fk FOREIGN KEY (user_id) REFERENCES user (id)
+);
+
+ALTER TABLE deposit ADD endDate DATE NOT NULL;
+ALTER TABLE deposit
+  MODIFY COLUMN client_id INT(11) NOT NULL AFTER endDate,
+  MODIFY COLUMN user_id INT(11) NOT NULL AFTER endDate;
+
+
+ALTER TABLE bsb_bank.deposit CHANGE endDate end_date DATE NOT NULL;
