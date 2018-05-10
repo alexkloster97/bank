@@ -60,10 +60,10 @@ public class CalculateWindow extends JFrame {
                 Integer termValue = (Integer) term.getValue();
                 if (capitalization.isSelected()) {
                     resultValue = new BigDecimal(summValue * Math.pow((1 + percentageValue / 4), termValue / 3)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                    profitValue = new BigDecimal(resultValue - (Double) summ.getValue()).doubleValue();
+                    profitValue = new BigDecimal(resultValue - (Double) summ.getValue()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                 } else {
                     resultValue = new BigDecimal(summValue + (summValue * percentageValue) * termValue / 12).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                    profitValue = new BigDecimal(resultValue - summValue).doubleValue();
+                    profitValue = new BigDecimal(resultValue - summValue).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                 }
                 endSumm.setText(resultValue.toString());
                 profit.setText(profitValue.toString());
