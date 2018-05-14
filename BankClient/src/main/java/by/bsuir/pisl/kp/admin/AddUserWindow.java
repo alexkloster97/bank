@@ -55,7 +55,10 @@ public class AddUserWindow extends JFrame {
                         Connection.getOutputStream().writeObject(2);
                         Connection.getOutputStream().writeObject(user);
                         if ((Boolean) Connection.getInputStream().readObject()) {
-                            Connection.getOutputStream().writeObject(3);
+                            JOptionPane.showMessageDialog(null,
+                                    "Пользователь зарегистрирован!",
+                                    "ОК",
+                                    JOptionPane.INFORMATION_MESSAGE);
                             dispose();
                         } else {
                             login.setBorder(BorderFactory.createLineBorder(Color.red));

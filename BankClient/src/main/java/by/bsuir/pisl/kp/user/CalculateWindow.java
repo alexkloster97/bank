@@ -30,7 +30,7 @@ public class CalculateWindow extends JFrame {
     private Double profitValue;
 
 
-    public CalculateWindow(JComboBox deposit1) {
+    public CalculateWindow() {
         super("Рассчет");
         initSpinners();
         deposit.addActionListener(new ActionListener() {

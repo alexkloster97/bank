@@ -112,7 +112,7 @@ public class DepositWindow extends CustomJFrame {
         calculateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new CalculateWindow(depos);
+                new CalculateWindow();
             }
         });
         doneButton.addActionListener(new ActionListener() {
@@ -146,8 +146,8 @@ public class DepositWindow extends CustomJFrame {
                 ((SpinnerNumberModel) summ.getModel()).setMinimum(Double.valueOf(minSumm.getText()));
             }
         });
-
-        setPreferredSize(new Dimension(650, 400));
+        initSpinners();
+        setPreferredSize(new Dimension(850, 400));
         pack();
         setContentPane(panel);
         setVisible(true);
@@ -170,6 +170,22 @@ public class DepositWindow extends CustomJFrame {
                 System.exit(0);
             }
         });
+        doneButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Calendar calendar = Calendar.getInstance();
+                Date startDate = new Date(calendar.getTime().getTime());
+                calendar.add(Calendar.MONTH, (Integer) term.getValue());
+                Date endDate = new Date(calendar.getTime().getTime());
+                Deposit deposit = new Deposit((DepositType) depos.getSelectedItem(), (Double) summ.getValue(), startDate, endDate, (Integer) term.getValue(), client, user);
+                try {
+                    Connection.getOutputStream().writeObject(13);
+                    Connection.getOutputStream().writeObject(deposit);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
         depos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -188,10 +204,11 @@ public class DepositWindow extends CustomJFrame {
         calculateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new CalculateWindow(depos);
+                new CalculateWindow();
             }
         });
-        setPreferredSize(new Dimension(650, 400));
+        initSpinners();
+        setPreferredSize(new Dimension(850, 400));
         pack();
         setContentPane(panel);
         setVisible(true);
@@ -215,6 +232,17 @@ public class DepositWindow extends CustomJFrame {
             address.setEditable(false);
         }
         editButton.setVisible(true);
+    }
+
+    private void initSpinners() {
+        SpinnerNumberModel summModel = new SpinnerNumberModel(0.0, 0.0, 1000000.0, 100);
+        summ.setModel(summModel);
+        JSpinner.NumberEditor summEditor = new JSpinner.NumberEditor(summ);
+        summ.setEditor(summEditor);
+        SpinnerNumberModel termModel = new SpinnerNumberModel(0, 0, 100, 6);
+        term.setModel(termModel);
+        JSpinner.NumberEditor termEditor = new JSpinner.NumberEditor(term);
+        term.setEditor(termEditor);
     }
 
 

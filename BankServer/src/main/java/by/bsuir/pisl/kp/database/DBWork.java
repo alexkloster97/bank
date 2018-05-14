@@ -2,6 +2,8 @@ package by.bsuir.pisl.kp.database;
 
 
 import client.Client;
+import credit.Credit;
+import credit.CreditType;
 import deposit.Deposit;
 import deposit.DepositType;
 import org.apache.log4j.Logger;
@@ -56,11 +58,12 @@ public class DBWork {
         }
         if (unique) {
             try {
-                stmt = con.prepareStatement("INSERT INTO `bsb_bank`.`user` (`login`,`password`,`name`, `role_id`) VALUES (?,?,?,?);");
+                stmt = con.prepareStatement("INSERT INTO `bsb_bank`.`user` (`login`,`password`,`name`, `role_id`, submitted) VALUES (?,?,?,?, ?);");
                 stmt.setString(1, user.getLogin());
                 stmt.setString(2, user.getPassword());
                 stmt.setString(3, user.getName());
                 stmt.setInt(4, user.getRole().getId());
+                stmt.setBoolean(5, user.getSubmitted());
                 stmt.executeUpdate();
             } catch (SQLException ex) {
                 LOGGER.error("Ошибка добавления пользователей: " + ex.getMessage());
@@ -243,6 +246,24 @@ public class DBWork {
         return client;
     }
 
+    public static Client getClientById(Integer id) {
+            Client client = null;
+            try {
+                stmt = con.prepareStatement("SELECT * FROM bsb_bank.clients WHERE id = ?");
+                stmt.setInt(1, id);
+                ResultSet result = stmt.executeQuery();
+                while (result.next()) {
+                    client = new Client(result.getInt("id"), result.getString("name"),
+                            result.getDate("birth_date"), result.getString("pasport_seria"),
+                            result.getInt("pasport_nuber"), result.getString("phone_number"),
+                            result.getString("address"));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return client;
+    }
+
     public static void updateClient(Client client) {
         try {
             stmt = con.prepareStatement("UPDATE clients SET name = ?, phone_number = ?, pasport_seria = ?, pasport_nuber = ?, address = ?, birth_date = ? WHERE id = ?");
@@ -276,9 +297,87 @@ public class DBWork {
         return depositTypes;
     }
 
+
+    public static ArrayList<CreditType> getAllCredits() {
+        ArrayList<CreditType> depositTypes = new ArrayList<CreditType>();
+        try {
+            stmt = con.prepareStatement("SELECT * FROM bsb_bank.credit_type d JOIN bsb_bank.currency c on d.currency_id = c.id");
+            ResultSet resultSet = stmt.executeQuery();
+            while(resultSet.next()) {
+                CreditType depositType = new CreditType(resultSet.getInt(1), resultSet.getString(2),
+                        resultSet.getDouble(3), resultSet.getInt(4), resultSet.getDouble(5),
+                        resultSet.getInt(6), resultSet.getString(8));
+                depositTypes.add(depositType);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return depositTypes;
+    }
+
+
+    public static CreditType getCreditTypeByID(Integer creditTypeId) {
+        CreditType depositType = null;
+        try{
+            stmt = con.prepareStatement("SELECT * FROM bsb_bank.credit_type d JOIN bsb_bank.currency c on d.currency_id = c.id WHERE d.id = ?");
+            stmt.setInt(1, creditTypeId);
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                depositType = new CreditType(resultSet.getInt("d.id"), resultSet.getString("description"),
+                        resultSet.getDouble("percentage"), resultSet.getInt("term"), resultSet.getDouble("min_summ"),
+                        resultSet.getInt("c.id"), resultSet.getString("currency"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return depositType;
+    }
+
+    public static void addCredit(Credit credit) {
+        try {
+            stmt = con.prepareStatement("INSERT INTO bsb_bank.credit (credit_id, summ, term, start_date, end_date, user_id, client_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            stmt.setInt(1, credit.getCredit().getId());
+            stmt.setDouble(2, credit.getSumm());
+            stmt.setInt(3, credit.getTerm());
+            stmt.setDate(4, credit.getStartDate());
+            stmt.setDate(5, credit.getEndDate());
+            stmt.setInt(6, credit.getUser().getId());
+            stmt.setInt(7, credit.getClient().getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<Credit> selectCreditOfClient(Client client) {
+        ArrayList<Credit> depositList = new ArrayList<Credit>();
+        try{
+            if(client != null) {
+                stmt = con.prepareStatement("SELECT * FROM bsb_bank.credit cr JOIN bsb_bank.credit_type dt ON cr.credit_id = dt.id  WHERE cr.client_id = ?");
+                stmt.setInt(1, client.getId());
+            } else {
+                stmt = con.prepareStatement("SELECT * FROM bsb_bank.credit cr JOIN bsb_bank.credit_type dt ON cr.credit_id = dt.id");
+            }
+            ResultSet resultSet = stmt.executeQuery();
+            while(resultSet.next()) {
+                CreditType creditType = getCreditTypeByID(resultSet.getInt("cr.credit_id"));
+                User user = getUserById(resultSet.getInt("cr.user_id"));
+                client = getClientById(resultSet.getInt("cr.client_id"));
+                Credit credit = new Credit(resultSet.getInt("cr.id"), creditType, resultSet.getDouble("cr.summ"),
+                        resultSet.getDate("cr.start_date"), resultSet.getDate("cr.end_date"),
+                        resultSet.getInt("cr.term"), client, user);
+                depositList.add(credit);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return depositList;
+    }
+
+
     public static void addDeposit(Deposit deposit) {
         try {
-            stmt = con.prepareStatement("INSERT INTO bsb_bank.deposit (deposit_id, summ, term, start_date, endDate, user_id, client_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            stmt = con.prepareStatement("INSERT INTO bsb_bank.deposit (deposit_id, summ, term, start_date, end_date, user_id, client_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
             stmt.setInt(1, deposit.getDeposit().getId());
             stmt.setDouble(2, deposit.getSumm());
             stmt.setInt(3, deposit.getTerm());
@@ -327,11 +426,16 @@ public class DBWork {
     public static ArrayList<Deposit> selectDepositsOfClient(Client client) {
         ArrayList<Deposit> depositList = new ArrayList<Deposit>();
         try{
-            stmt = con.prepareStatement("SELECT * FROM bsb_bank.deposit d JOIN bsb_bank.deposit_type dt on d.deposit_id = dt.id  WHERE d.client_id = ?");
-            stmt.setInt(1, client.getId());
+            if(client != null) {
+                stmt = con.prepareStatement("SELECT * FROM bsb_bank.deposit d JOIN bsb_bank.deposit_type dt ON d.deposit_id = dt.id  WHERE d.client_id = ?");
+                stmt.setInt(1, client.getId());
+            } else {
+                stmt = con.prepareStatement("SELECT * FROM bsb_bank.deposit d JOIN bsb_bank.deposit_type dt ON d.deposit_id = dt.id");
+            }
             ResultSet resultSet = stmt.executeQuery();
             while(resultSet.next()) {
                 DepositType depositType = getDepositTypeById(resultSet.getInt("d.deposit_id"));
+                client = getClientById(resultSet.getInt("d.client_id"));
                 User user = getUserById(resultSet.getInt("d.user_id"));
                 Deposit deposit = new Deposit(resultSet.getInt("d.id"), depositType, resultSet.getDouble("d.summ"),
                         resultSet.getDate("d.start_date"), resultSet.getDate("d.end_date"),

@@ -2,6 +2,7 @@ package by.bsuir.pisl.kp.connection;
 
 import by.bsuir.pisl.kp.database.DBWork;
 import client.Client;
+import credit.Credit;
 import deposit.Deposit;
 import org.apache.log4j.Logger;
 import payment.Payment;
@@ -175,6 +176,20 @@ public class Server {
                             client = (Client) in.readObject();
                             ArrayList<Deposit> deposits = DBWork.selectDepositsOfClient(client);
                             out.writeObject(deposits);
+                            break;
+                        case 15:
+                            out.writeObject(DBWork.getAllCredits());
+                            LOGGER.info("Список кредитов отправлен пользователю:" + this.getLogin());
+                            break;
+                        case 16:
+                            client = (Client) in.readObject();
+                            ArrayList<Credit> credits = DBWork.selectCreditOfClient(client);
+                            out.writeObject(credits);
+                            break;
+                        case 17:
+                            Credit credit = (Credit) in.readObject();
+                            DBWork.addCredit(credit);
+                            LOGGER.info("Вклад " + credit.getCredit().getDescription() + " клиента " + credit.getClient().getName() + " принят пользователем:" + this.getLogin());
                             break;
                         case -1:
                             connected = false;

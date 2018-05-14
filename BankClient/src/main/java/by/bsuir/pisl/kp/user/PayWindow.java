@@ -208,8 +208,7 @@ public class PayWindow extends CustomJFrame {
                 } else {
                     try {
                         String seriapasport = pasport.getText().substring(0, 2);
-                        Integer numberpasport = Integer.parseInt(pasport.getText().substring(2, pasport.getText().length()));
-                        Client client = new Client(name.getText(), new Date(birth.getDate().getTime()), seriapasport, numberpasport, phone.getText(), address.getText());
+                        Integer numberpasport = Integer.parseInt(pasport.getText().substring(2, pasport.getText().length()));Client client = new Client(name.getText(), new Date(birth.getDate().getTime()), seriapasport, numberpasport, phone.getText(), address.getText());
                         Connection.getOutputStream().writeObject(10);
                         Connection.getOutputStream().writeObject(client);
                         client = (Client) Connection.getInputStream().readObject();

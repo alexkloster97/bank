@@ -74,27 +74,28 @@ public class MainUser extends CustomJFrame {
         depositButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int row = clientsTable.getSelectedRow();
-                if (row == -1) {
-                    new DepositWindow(user);
-                    dispose();
-                } else {
-                    Client client = null;
-                    for (Client cl : clients) {
-                        if (cl.getId() == (Integer) clientsTable.getValueAt(row, 0)) {
-                            client = cl;
-                            break;
+                try {
+                    int row = clientsTable.getSelectedRow();
+                    if (row == -1) {
+                        Connection.getOutputStream().writeObject(14);
+                        Connection.getOutputStream().writeObject(null);
+                        new DepositWindow(user);
+                        dispose();
+                    } else {
+                        Client client = null;
+                        for (Client cl : clients) {
+                            if (cl.getId() == (Integer) clientsTable.getValueAt(row, 0)) {
+                                client = cl;
+                                break;
+                            }
                         }
-                    }
-                    try {
                         Connection.getOutputStream().writeObject(14);
                         Connection.getOutputStream().writeObject(client);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
+                        new DepositWindow(client, user);
+                        dispose();
                     }
-                    new DepositWindow(client, user);
-
-                    dispose();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
             }
         });
@@ -102,6 +103,35 @@ public class MainUser extends CustomJFrame {
         pack();
         setContentPane(panel);
         setVisible(true);
+
+        creditButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int row = clientsTable.getSelectedRow();
+                    if (row == -1) {
+                        Connection.getOutputStream().writeObject(16);
+                        Connection.getOutputStream().writeObject(null);
+                        new CreditWindow(null, user);
+                        dispose();
+                    } else {
+                        Client client = null;
+                        for (Client cl : clients) {
+                            if (cl.getId() == (Integer) clientsTable.getValueAt(row, 0)) {
+                                client = cl;
+                                break;
+                            }
+                        }
+                        Connection.getOutputStream().writeObject(16);
+                        Connection.getOutputStream().writeObject(client);
+                        new CreditWindow(client, user);
+                        dispose();
+                    }
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
     }
 
     private void createUIComponents() {

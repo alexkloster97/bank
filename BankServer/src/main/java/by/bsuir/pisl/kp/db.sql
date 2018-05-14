@@ -281,4 +281,18 @@ ALTER TABLE deposit
   MODIFY COLUMN user_id INT(11) NOT NULL AFTER endDate;
 
 
-ALTER TABLE bsb_bank.deposit CHANGE endDate end_date DATE NOT NULL;
+ALTER TABLE bsb_bank.credit CHANGE endDate end_date DATE NOT NULL;
+
+
+CREATE TABLE IF NOT EXISTS `bsb_bank`.`credit_type` (
+  `id`   INT(11)     NOT NULL AUTO_INCREMENT,
+  `description` VARCHAR(45) NULL     DEFAULT NULL,
+  `percentage` DOUBLE null DEFAULT null,
+  `term` int(11) null DEFAULT NULL ,
+  `min_summ` DOUBLE null DEFAULT NULL ,
+  `currency_id` VARCHAR(3) NULL DEFAULT null,
+PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8;
